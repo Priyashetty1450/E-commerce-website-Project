@@ -1,0 +1,15 @@
+footer {
+  background: var(--secondary);
+  color: white;
+  padding: 4rem 5% 2rem;
+}
+
+.footer-container {
+  display: grid;
+  gap: 2rem;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 2rem;
+}

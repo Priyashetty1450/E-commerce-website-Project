@@ -1,0 +1,97 @@
+.about-hero {
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+              url("../assets/images/homek.jpg") center/cover;
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.about-container {
+  display: flex;
+  gap: 40px;
+  padding: 60px 10%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.about-text {
+  flex: 1;
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 10px;
+}
+
+.founder {
+  padding: 60px 10%;
+  background: #f9f9f9;
+}
+
+.founder-box {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.founder-box img {
+  width: 250px;
+  border-radius: 10px;
+}
+
+.vision-mission {
+  display: flex;
+  gap: 20px;
+  padding: 60px 10%;
+  flex-wrap: wrap;
+}
+
+.vm-box {
+  flex: 1;
+  background: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.vm-box i {
+  font-size: 35px;
+  color: #8b4513;
+  margin-bottom: 10px;
+}
+
+.why-choose {
+  padding: 60px 10%;
+  text-align: center;
+}
+
+.features {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.feature {
+  background: #fff;
+  padding: 20px;
+  width: 180px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.feature i {
+  font-size: 28px;
+  color: #8b4513;
+  margin-bottom: 10px;
+}
+
+footer {
+  background: #3b2f2f;
+  color: #f5e6b3;
+  text-align: center;
+  padding: 15px;
+}

@@ -893,3 +893,34 @@ footer {
   cursor: pointer;
   border-radius: 5px;
 }
+
+/* HEADER */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 8%;
+  background: #f5efe6;
+}
+
+.main-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.main-header .logo img {
+  width: 50px;
+}
+
+.main-header nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #3b2f2f;
+  font-weight: 600;
+}
+
+.main-header nav a:hover,
+.main-header nav .active {
+  color: #8b4513;
+}

@@ -1,0 +1,11 @@
+.btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: var(--secondary);
+}
