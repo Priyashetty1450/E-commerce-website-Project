@@ -1,637 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Track Your Order - Shri Manjunatha Shamiyana Works & Events">
-    <link rel="stylesheet" href="ii.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>Track Order - Shri Manjunatha Shamiyana Works & Events</title>
-    <style>
-        .track-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .track-header {
-            text-align: center;
-            margin-bottom: 30px;
-            
-        }
-        .track-header h1 {
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        .track-form {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px var(--shadow);
-            margin-bottom: 30px;
-        }
-        .track-form h2 {
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .track-form input[type="text"] {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color var(--transition);
-        }
-        .track-form input[type="text"]:focus {
-            border-color: var(--primary);
-        }
-        .track-btn {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform var(--transition), box-shadow var(--transition);
-        }
-        .track-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
-        }
-        .order-result {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px var(--shadow);
-        }
-        .order-result.active {
-            display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .order-info {
-            margin-bottom: 30px;
-        }
-        .order-info h2 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--primary);
-        }
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .info-item {
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
-        }
-        .info-item label {
-            display: block;
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        .info-item span {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-        .status-timeline {
-            margin-top: 30px;
-        }
-        .status-timeline h3 {
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-        .timeline {
-            position: relative;
-            padding-left: 40px;
-        }
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: linear-gradient(to bottom, #4CAF50 0%, #e0e0e0 100%);
-            border-radius: 2px;
-        }
-        .timeline-item {
-            position: relative;
-            padding-bottom: 30px;
-        }
-        .timeline-item:last-child {
-            padding-bottom: 0;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -32px;
-            top: 0;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #fff;
-            border: 4px solid #ccc;
-            z-index: 1;
-            transition: all 0.3s ease;
-        }
-        .timeline-item.completed::before {
-            background: #4CAF50;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);
-        }
-        .timeline-item.active::before {
-            background: #ff9800;
-            border-color: #ff9800;
-            box-shadow: 0 0 0 4px rgba(255, 152, 0, 0.3);
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 4px rgba(255, 152, 0, 0.3); }
-            50% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(255, 152, 0, 0.15); }
-        }
-        .timeline-content {
-            background: linear-gradient(145deg, #f8f9fa, #fff);
-            padding: 18px;
-            border-radius: 10px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-            border: 1px solid #eee;
-            transition: all 0.3s ease;
-        }
-        .timeline-item.completed .timeline-content {
-            border-left: 4px solid #4CAF50;
-        }
-        .timeline-item.active .timeline-content {
-            border-left: 4px solid #ff9800;
-            background: linear-gradient(145deg, #fff8f0, #fff);
-        }
-        .timeline-content h4 {
-            color: #333;
-            margin-bottom: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        .timeline-content p {
-            font-size: 0.85rem;
-            color: #666;
-            margin: 0;
-        }
-        .timeline-content .timestamp {
-            font-size: 0.75rem;
-            color: #999;
-            margin-top: 8px;
-        }
-        .error-message {
-            display: none;
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .error-message.active {
-            display: block;
-        }
-        .shipping-address {
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--light);
-            border-radius: 8px;
-        }
-        .shipping-address h4 {
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-        .shipping-address p {
-            margin: 0;
-            color: #666;
-            line-height: 1.6;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description"
+    content="Track Your Order - Shri Manjunatha Shamiyana Works & Events">
+
+  <!-- GLOBAL CSS -->
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <!-- HEADER / COMMON CSS -->
+  <link rel="stylesheet" href="../../css/ii.css">
+
+  <!-- PAGE CSS (create this if you want custom styling) -->
+  <link rel="stylesheet" href="../../css/pages/track-order.css">
+
+  <!-- FONT AWESOME -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <title>Track Order - Shri Manjunatha Shamiyana Works & Events</title>
 </head>
+
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <img src="logo.jpg" alt="Shri Manjunatha Shamiyana Works & Events">
-            </div>
-            <div class="search-bar"> 
-                <input type="text" placeholder="Search..." aria-label="Search"> 
-                <button type="button" aria-label="Search"> 
-                    <i class="fa fa-search"></i> 
-                </button> 
-            </div>
 
-            <div class="mobile-menu-btn">
-                ☰
-            </div>
+<header>
+  <div class="header-container">
 
-            <nav>
-                <ul>
-                    <li><a href="ii.html">Home</a></li>
-                    <li><a href="#">Shop</a></li>
-                    <li><a href="Service.html">Service</a></li>
-                    <li><a href="About.html">About Us</a></li>
-                    <li><a href="Contact-us.html">Contact</a></li>
-                    <li><a href="track-order.html" style="color: var(--secondary);">Track Order</a></li>
-                    <li id="login-btn"><a href="#" onclick="showAuthModal('login')">Login</a></li>
-                    <li id="logout-btn" style="display: none;"><a href="#" onclick="logout()">Logout</a></li>
-                </ul>
-            </nav>
-
-            <div class="cart-icon">
-                <a href="cart.html"><i class="fa fa-shopping-cart"></i></a>
-            </div>
-        </div>
-    </header>
-
-    <div class="track-container">
-        <div class="track-header">
-            <h1>Track Your Order</h1>
-            <p>Enter your order ID to track the status of your order</p>
-        </div>
-
-        <div class="track-form">
-            <h2><i class="fa fa-search"></i> Find Your Order</h2>
-            <div class="input-group">
-                <input type="email" id="emailInput" placeholder="Enter your email address" required>
-            </div>
-            <div class="input-group">
-                <input type="text" id="orderIdInput" placeholder="Enter Order ID (e.g., ORD-1234567890)" required>
-                <button class="track-btn" onclick="trackOrder()">Track Order</button>
-            </div>
-            <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-                Enter the email address used during checkout and your order ID to track your order.
-            </p>
-        </div>
-
-        <div class="error-message" id="errorMessage">
-            <i class="fa fa-exclamation-circle"></i> <span id="errorText">Order not found. Please check your order ID and try again.</span>
-        </div>
-
-        <div class="order-result" id="orderResult">
-            <div class="order-info">
-                <h2><i class="fa fa-box"></i> Order Details</h2>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>Order ID</label>
-                        <span id="resultOrderId">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Customer Name</label>
-                        <span id="resultCustomer">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Order Date</label>
-                        <span id="resultDate">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Total Amount</label>
-                        <span id="resultTotal">₹0</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Products</label>
-                        <span id="resultProducts">-</span>
-                    </div>
-                    <div class="info-item">
-                        <label>Quantity</label>
-                        <span id="resultQuantity">0</span>
-                    </div>
-                </div>
-                
-                <div class="shipping-address" id="shippingAddressSection" style="display: none;">
-                    <h4><i class="fa fa-map-marker"></i> Shipping Address</h4>
-                    <p id="resultAddress">-</p>
-                </div>
-            </div>
-
-            <div class="status-timeline">
-                <h3><i class="fa fa-truck"></i> Order Status</h3>
-                <div class="timeline" id="statusTimeline">
-                    <!-- Timeline items will be populated by JavaScript -->
-                </div>
-            </div>
-        </div>
+    <div class="logo">
+      <img src="../../assets/images/logo.jpg" alt="Shri Manjunatha">
     </div>
 
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="auth-modal" onclick="closeAuthModal()">
-        <div class="auth-form" onclick="event.stopPropagation()">
-            <h2 id="auth-title">Login</h2>
-            <form id="auth-form">
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Submit</button>
-                <button type="button" class="back-btn" onclick="closeAuthModal()">Back</button>
-            </form>
-            <div class="forgot-password">
-                <a href="#" onclick="forgotPassword()">Forgot Password?</a>
-            </div>
-            <div class="divider">
-                <span>or</span>
-            </div>
-            <button class="google-btn" onclick="continueWithGoogle()">
-                <i class="fab fa-google"></i> Continue with Google
-            </button>
-            <div class="switch-form">
-                <a onclick="switchForm()">Switch to Signup</a>
-            </div>
-        </div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+      <button><i class="fa fa-search"></i></button>
     </div>
 
-    <script>
-        const API_BASE = 'http://localhost:5000/api';
-        
-        // Order status order for timeline
-        const STATUS_ORDER = [
-            'Order Placed',
-            'Order Packed',
-            'Order Shipped',
-            'Order Out for Delivery',
-            'Delivered'
-        ];
+    <div class="mobile-menu-btn">☰</div>
 
-        let isLogin = true;
+    <nav>
+      <ul>
+        <li><a href="../misc/ii.html">Home</a></li>
+        <li><a href="../shop/shop.html">Shop</a></li>
+        <li><a href="../info/Service.html">Service</a></li>
+        <li><a href="../info/About.html">About Us</a></li>
+        <li><a href="../contact/Contact-us.html">Contact</a></li>
+        <li><a href="../orders/track-order.html" style="color: var(--secondary);">Track Order</a></li>
 
-        // Authentication functions
-        function showAuthModal(type) {
-            isLogin = type === 'login';
-            document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Signup';
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
+        <li id="login-btn"><a href="#">Login</a></li>
+        <li id="logout-btn" style="display:none;"><a href="#">Logout</a></li>
+      </ul>
+    </nav>
 
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
+    <div class="cart-icon">
+      <a href="../cart/cart.html"><i class="fa fa-shopping-cart"></i></a>
+      <span class="cart-count">0</span>
+    </div>
 
-        function switchForm() {
-            isLogin = !isLogin;
-            document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Signup';
-        }
+  </div>
+</header>
 
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+<!-- TRACK ORDER SECTION -->
 
-            try {
-                const res = await fetch(`${API_BASE}${endpoint}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('role', data.role);
-                    closeAuthModal();
-                    updateUI();
-                    if (data.role === 'admin') window.location.href = 'admin.html';
-                } else {
-                    alert(data.message);
-                }
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        });
+<div class="track-container">
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            updateUI();
-        }
+  <div class="track-header">
+    <h1>Track Your Order</h1>
+    <p>Enter your order ID to track the status of your order</p>
+  </div>
 
-        function updateUI() {
-            const token = localStorage.getItem('token');
-            document.getElementById('login-btn').style.display = token ? 'none' : 'block';
-            document.getElementById('logout-btn').style.display = token ? 'block' : 'none';
-        }
+  <div class="track-form">
 
-        function forgotPassword() {
-            const email = prompt('Enter your email address:');
-            if (email) {
-                alert('If an account with that email exists, a reset link has been sent.');
-            }
-        }
+    <h2><i class="fa fa-search"></i> Find Your Order</h2>
 
-        async function continueWithGoogle() {
-            try {
-                // Get Google OAuth URL from backend
-                const response = await fetch(`${API_BASE}/auth/google`, {
-                    method: 'GET'
-                });
-                
-                const data = await response.json();
-                
-                if (data.demoMode) {
-                    // Demo mode - use demo login
-                    const email = prompt('Demo Mode: Please enter your email:');
-                    if (!email) return;
-                    
-                    const name = prompt('Demo Mode: Please enter your name (optional):');
-                    
-                    const demoResponse = await fetch(`${API_BASE}/auth/google/demo`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, name: name || '' })
-                    });
-                    
-                    const demoData = await demoResponse.json();
-                    
-                    if (demoData.success) {
-                        localStorage.setItem('token', demoData.token);
-                        localStorage.setItem('role', demoData.role);
-                        closeAuthModal();
-                        updateUI();
-                        alert('Successfully logged in with Google (Demo)!');
-                    } else {
-                        alert(demoData.message || 'Demo login failed');
-                    }
-                } else if (data.authUrl) {
-                    // Real Google OAuth - redirect to Google
-                    window.location.href = data.authUrl;
-                }
-            } catch (err) {
-                alert('Error initiating Google login. Please try again.');
-                console.error(err);
-            }
-        }
+    <div class="input-group">
+      <input type="email" id="emailInput"
+        placeholder="Enter your email address" required>
+    </div>
 
-        // Track order function
-        async function trackOrder() {
-            const orderId = document.getElementById('orderIdInput').value.trim();
-            const email = document.getElementById('emailInput').value.trim();
-            
-            if (!orderId) {
-                showError('Please enter an order ID.');
-                return;
-            }
-            
-            if (!email) {
-                showError('Please enter your email address.');
-                return;
-            }
+    <div class="input-group">
+      <input type="text" id="orderIdInput"
+        placeholder="Enter Order ID (e.g., ORD-1234567890)" required>
 
-            try {
-                const response = await fetch(`${API_BASE}/orders/track/${orderId}?email=${encodeURIComponent(email)}`);
-                const data = await response.json();
+      <button class="track-btn" onclick="trackOrder()">
+        Track Order
+      </button>
+    </div>
 
-                if (response.ok) {
-                    displayOrder(data);
-                    hideError();
-                } else {
-                    showError(data.message || 'Order not found. Please check your order ID and email address.');
-                }
-            } catch (err) {
-                showError('Error tracking order. Please try again later.');
-                console.error('Error tracking order:', err);
-            }
-        }
+    <p class="track-note">
+      Enter the email used during checkout and your order ID.
+    </p>
 
-        function showError(message) {
-            document.getElementById('errorText').textContent = message;
-            document.getElementById('errorMessage').classList.add('active');
-            document.getElementById('orderResult').classList.remove('active');
-        }
+  </div>
 
-        function hideError() {
-            document.getElementById('errorMessage').classList.remove('active');
-        }
+  <div class="error-message" id="errorMessage">
+    <i class="fa fa-exclamation-circle"></i>
+    <span id="errorText">Order not found.</span>
+  </div>
 
-        function displayOrder(order) {
-            // Display order details
-            document.getElementById('resultOrderId').textContent = order.orderId;
-            document.getElementById('resultCustomer').textContent = order.customer || 'N/A';
-            document.getElementById('resultDate').textContent = formatDate(order.createdAt);
-            document.getElementById('resultTotal').textContent = `₹${order.total || 0}`;
-            document.getElementById('resultProducts').textContent = order.product || 'N/A';
-            document.getElementById('resultQuantity').textContent = order.quantity || 0;
+  <div class="order-result" id="orderResult">
 
-            // Display shipping address if available
-            if (order.shippingAddress) {
-                const address = order.shippingAddress;
-                const addressText = [
-                    address.street,
-                    address.city,
-                    address.state,
-                    address.zipCode,
-                    address.country
-                ].filter(part => part).join(', ');
-                
-                if (addressText) {
-                    document.getElementById('resultAddress').textContent = addressText;
-                    document.getElementById('shippingAddressSection').style.display = 'block';
-                } else {
-                    document.getElementById('shippingAddressSection').style.display = 'none';
-                }
-            } else {
-                document.getElementById('shippingAddressSection').style.display = 'none';
-            }
+    <div class="order-info">
 
-            // Display status timeline
-            displayStatusTimeline(order);
+      <h2><i class="fa fa-box"></i> Order Details</h2>
 
-            // Show the result
-            document.getElementById('orderResult').classList.add('active');
-        }
+      <div class="info-grid">
 
-        function displayStatusTimeline(order) {
-            const timelineContainer = document.getElementById('statusTimeline');
-            timelineContainer.innerHTML = '';
+        <div class="info-item">
+          <label>Order ID</label>
+          <span id="resultOrderId">-</span>
+        </div>
 
-            const currentStatus = order.status;
-            const statusHistory = order.statusHistory || [];
+        <div class="info-item">
+          <label>Customer Name</label>
+          <span id="resultCustomer">-</span>
+        </div>
 
-            // Create timeline based on statusHistory if available, otherwise use current status
-            if (statusHistory.length > 0) {
-                // Use the actual status history from the order
-                statusHistory.forEach((item, index) => {
-                    const isLast = index === statusHistory.length - 1;
-                    const timelineItem = document.createElement('div');
-                    timelineItem.className = `timeline-item ${isLast ? 'active' : 'completed'}`;
-                    timelineItem.innerHTML = `
-                        <div class="timeline-content">
-                            <h4>${item.status}</h4>
-                            <p>${item.note || ''}</p>
-                            <div class="timestamp">${formatDate(item.timestamp)}</div>
-                        </div>
-                    `;
-                    timelineContainer.appendChild(timelineItem);
-                });
-            } else {
-                // Fallback to current status with default timeline
-                const currentIndex = STATUS_ORDER.indexOf(currentStatus);
-                
-                STATUS_ORDER.forEach((status, index) => {
-                    let timelineClass = '';
-                    if (index < currentIndex) {
-                        timelineClass = 'completed';
-                    } else if (index === currentIndex) {
-                        timelineClass = 'active';
-                    }
+        <div class="info-item">
+          <label>Order Date</label>
+          <span id="resultDate">-</span>
+        </div>
 
-                    const timelineItem = document.createElement('div');
-                    timelineItem.className = `timeline-item ${timelineClass}`;
-                    timelineItem.innerHTML = `
-                        <div class="timeline-content">
-                            <h4>${status}</h4>
-                            <p>${index === currentIndex ? 'Current status' : (index < currentIndex ? 'Completed' : 'Pending')}</p>
-                        </div>
-                    `;
-                    timelineContainer.appendChild(timelineItem);
-                });
-            }
-        }
+        <div class="info-item">
+          <label>Total Amount</label>
+          <span id="resultTotal">₹0</span>
+        </div>
 
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
+        <div class="info-item">
+          <label>Products</label>
+          <span id="resultProducts">-</span>
+        </div>
 
-        // Allow pressing Enter to track order
-        document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                trackOrder();
-            }
-        });
+        <div class="info-item">
+          <label>Quantity</label>
+          <span id="resultQuantity">0</span>
+        </div>
 
-// Initialize
-        window.addEventListener('load', () => {
-            updateUI();
-            
-            // Check for order ID in URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const orderId = urlParams.get('orderId');
-            if (orderId) {
-                document.getElementById('orderIdInput').value = orderId;
-                trackOrder();
-            }
-        });
-    </script>
+      </div>
+
+      <div class="shipping-address"
+        id="shippingAddressSection" style="display:none;">
+
+        <h4><i class="fa fa-map-marker"></i> Shipping Address</h4>
+        <p id="resultAddress">-</p>
+
+      </div>
+
+    </div>
+
+    <div class="status-timeline">
+      <h3><i class="fa fa-truck"></i> Order Status</h3>
+      <div class="timeline" id="statusTimeline"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- AUTH MODAL (unchanged structure) -->
+
+<div id="auth-modal" class="auth-modal">
+  <div class="auth-form">
+
+    <h2 id="auth-title">Login</h2>
+
+    <form id="auth-form">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Submit</button>
+      <button type="button" class="back-btn">Back</button>
+    </form>
+
+  </div>
+</div>
+
+<!-- PAGE JS -->
+<script src="../../js/track-order.js"></script>
+
 </body>
 </html>
