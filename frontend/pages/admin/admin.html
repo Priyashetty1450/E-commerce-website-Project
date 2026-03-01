@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Admin Dashboard</title>
+
+  <link rel="stylesheet" href="/css/ii.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+</head>
+
+<body>
+
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <img src="/assets/images/logo.jpg" alt="Logo">
+    </div>
+
+    <nav>
+      <ul>
+        <li><a href="/">Back to Site</a></li>
+        <li><a href="#add-product">Add Product</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#orders">Orders</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard-container">
+
+  <h1>Admin Dashboard</h1>
+
+  <div class="summary">
+    <div class="summary-item">
+      <h3 id="total-products">0</h3>
+      <p>Total Products</p>
+    </div>
+
+    <div class="summary-item">
+      <h3 id="total-orders">0</h3>
+      <p>Total Orders</p>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT -->
+  <section id="add-product" class="dashboard-section">
+    <h2>Add New Product</h2>
+
+    <form id="product-form">
+      <input type="text" id="product-name" placeholder="Product Name" required>
+      <input type="file" id="product-image" accept=".jpg,.jpeg" required>
+      <input type="number" id="product-price" placeholder="Price" required>
+      <input type="number" id="product-stock" placeholder="Stock" required>
+
+      <select id="product-category" required>
+        <option value="">Select Category</option>
+        <option value="mural">Wall Murals</option>
+        <option value="stage">Stage Decor</option>
+        <option value="furniture">Furniture</option>
+      </select>
+
+      <textarea id="product-description" placeholder="Description"></textarea>
+
+      <button type="submit" class="btn">Add Product</button>
+    </form>
+  </section>
+
+  <!-- PRODUCT LIST -->
+  <section id="products" class="dashboard-section">
+    <h2>Product List</h2>
+    <div id="product-list" class="product-list"></div>
+  </section>
+
+  <!-- ORDERS -->
+  <section id="orders" class="dashboard-section">
+    <h2>Order Tracking</h2>
+
+    <table id="order-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody></tbody>
+    </table>
+
+  </section>
+
+</main>
+
+<script src="/js/admin.js"></script>
+
+</body>
+</html>

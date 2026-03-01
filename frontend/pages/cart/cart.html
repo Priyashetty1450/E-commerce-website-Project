@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Shopping Cart</title>
+
+  <link rel="stylesheet" href="/css/ii.css" />
+  <link rel="stylesheet" href="/css/cart.css" />
+
+  <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+</head>
+
+<body>
+
+<header>
+  <div class="header-container">
+
+    <div class="logo">
+      <img src="/assets/images/logo.jpg">
+    </div>
+
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/pages/shop/shop.html">Shop</a></li>
+        <li><a href="/pages/info/Service.html">Service</a></li>
+        <li><a href="/pages/info/About.html">About</a></li>
+        <li><a href="/pages/contact/Contact-us.html">Contact</a></li>
+
+        <li id="login-btn"><a href="#">Login</a></li>
+        <li id="logout-btn" style="display:none;"><a href="#">Logout</a></li>
+      </ul>
+    </nav>
+
+    <div class="cart-icon">
+      <a href="/pages/cart/cart.html"><i class="fa fa-shopping-cart"></i></a>
+    </div>
+
+  </div>
+</header>
+
+<main class="cart-container">
+
+  <h1>Shopping Cart</h1>
+
+  <div id="cart-items"></div>
+
+  <div id="cart-summary" class="cart-summary" style="display:none;">
+    <h3>Order Summary</h3>
+    <p>Total Items: <span id="total-items">0</span></p>
+    <p>Total Amount: ₹<span id="total-amount">0</span></p>
+
+    <button class="checkout-btn" onclick="goToCheckout()">
+      Proceed to Checkout
+    </button>
+  </div>
+
+</main>
+
+<script src="/js/cart.js"></script>
+
+</body>
+</html>

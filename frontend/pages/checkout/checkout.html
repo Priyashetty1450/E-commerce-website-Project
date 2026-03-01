@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checkout</title>
+
+<link rel="stylesheet" href="/css/ii.css">
+<link rel="stylesheet" href="/css/checkout.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+
+<header>
+  <div class="header-container">
+
+    <div class="logo">
+      <img src="/assets/images/logo.jpg">
+    </div>
+
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/pages/shop/shop.html">Shop</a></li>
+        <li><a href="/pages/cart/cart.html">Cart</a></li>
+        <li id="login-btn"><a onclick="showAuthModal()">Login</a></li>
+        <li id="logout-btn" style="display:none;"><a onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<div class="checkout-container">
+
+  <h1>Checkout</h1>
+
+  <div class="checkout-grid">
+
+    <div class="checkout-form">
+
+      <h3>Shipping</h3>
+
+      <input id="fullName" placeholder="Full Name">
+      <input id="phone" placeholder="Phone">
+      <input id="email" placeholder="Email">
+      <input id="street" placeholder="Address">
+      <input id="city" placeholder="City">
+
+      <button class="checkout-btn" onclick="goToPayment()">Continue</button>
+
+      <div id="paymentSection" style="display:none">
+
+        <h3>Payment</h3>
+
+        <div class="payment-option selected"
+        data-method="cash_on_delivery"
+        onclick="selectPaymentMethod(this)">
+        COD
+        </div>
+
+        <div class="payment-option"
+        data-method="razorpay"
+        onclick="selectPaymentMethod(this)">
+        Razorpay
+        </div>
+
+        <button class="checkout-btn" onclick="placeOrder()">
+        Place Order
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="order-summary">
+
+      <h3>Order Summary</h3>
+
+      <div id="summaryItems"></div>
+
+      <p>Subtotal: ₹<span id="summarySubtotal">0</span></p>
+      <p>Total: ₹<span id="summaryTotal">0</span></p>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div id="auth-modal" class="auth-modal">
+  <div class="auth-form">
+    <h2>Login</h2>
+    <input id="username">
+    <input id="password" type="password">
+    <button onclick="login()">Submit</button>
+  </div>
+</div>
+
+<script src="/js/checkout.js"></script>
+
+</body>
+</html>
