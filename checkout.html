@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Checkout - Shri Manjunatha Shamiyana Works & Events">
+    <link rel="stylesheet" href="ii.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Checkout - Shri Manjunatha Shamiyana Works & Events</title>
+    <style>
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .checkout-header h1 {
+            color: var(--primary);
+        }
+        .checkout-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: #999;
+        }
+        .step.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .step.completed {
+            color: #28a745;
+        }
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .step.active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+        .step.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+        @media (max-width: 900px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .checkout-form {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        .checkout-form h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        .form-section {
+            margin-bottom: 25px;
+        }
+        .form-section h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color var(--transition);
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 500px) {
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+        .payment-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            text-align: center;
+        }
+        .payment-option:hover {
+            border-color: var(--primary);
+        }
+        .payment-option.selected {
+            border-color: var(--primary);
+            background: rgba(139, 69, 19, 0.1);
+        }
+        .payment-option i {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        .payment-option span {
+            display: block;
+            font-weight: 600;
+        }
+        .order-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        .order-summary h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        .summary-items {
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .summary-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .summary-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+        .summary-item-details {
+            flex: 1;
+        }
+        .summary-item-details h4 {
+            margin: 0 0 5px 0;
+            font-size: 14px;
+        }
+        .summary-item-details p {
+            margin: 0;
+            color: #666;
+            font-size: 12px;
+        }
+        .summary-totals {
+            border-top: 2px solid var(--light);
+            padding-top: 15px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            border-top: 2px solid var(--light);
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
+        }
+        .checkout-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .shipping-option {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .shipping-option:hover {
+            border-color: var(--primary);
+        }
+        .shipping-option.selected {
+            border-color: var(--primary);
+            background: rgba(139, 69, 19, 0.1);
+        }
+        .shipping-option-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .shipping-option-name {
+            font-weight: 600;
+        }
+        .shipping-option-price {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .shipping-option-time {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .coupon-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .coupon-section input {
+            flex: 1;
+        }
+        .coupon-section button {
+            padding: 12px 20px;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .guest-notice {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        .guest-notice p {
+            margin: 0;
+            color: #856404;
+        }
+        .guest-notice a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-modal.active {
+            display: flex;
+        }
+        .auth-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .auth-form h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .auth-form button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <img src="logo.jpg" alt="Shri Manjunatha Shamiyana Works & Events">
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search..." aria-label="Search">
+                <button type="button" aria-label="Search"><i class="fa fa-search"></i></button>
+            </div>
+            <div class="mobile-menu-btn">☰</div>
+            <nav>
+                <ul>
+                    <li><a href="ii.html">Home</a></li>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="Service.html">Service</a></li>
+                    <li><a href="About.html">About Us</a></li>
+                    <li><a href="Contact-us.html">Contact</a></li>
+                    <li><a href="track-order.html">Track Order</a></li>
+                    <li id="login-btn"><a href="#" onclick="showAuthModal()">Login</a></li>
+                    <li id="logout-btn" style="display: none;"><a href="#" onclick="logout()">Logout</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <a href="cart.html"><i class="fa fa-shopping-cart"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1>Checkout</h1>
+        </div>
+
+        <div class="checkout-steps">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <span>Shipping</span>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <span>Payment</span>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <span>Review</span>
+            </div>
+        </div>
+
+        <div class="checkout-grid">
+            <div class="checkout-form">
+                <!-- Guest Notice -->
+                <div class="guest-notice" id="guestNotice">
+                    <p>Continuing as guest? <a href="#" onclick="showAuthModal()">Login</a> for a better experience!</p>
+                </div>
+
+                <!-- Shipping Information -->
+                <div class="form-section" id="shippingSection">
+                    <h3><i class="fa fa-map-marker"></i> Shipping Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name *</label>
+                            <input type="text" id="fullName" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" id="phone" placeholder="Enter phone number" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" placeholder="Enter email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Street Address *</label>
+                        <input type="text" id="street" placeholder="Enter street address" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Landmark</label>
+                        <input type="text" id="landmark" placeholder="Enter landmark (optional)">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City *</label>
+                            <input type="text" id="city" placeholder="Enter city" required>
+                        </div>
+                        <div class="form-group">
+                            <label>State *</label>
+                            <select id="state" required onchange="updateShipping()">
+                                <option value="">Select State</option>
+                                <option value="AP">Andhra Pradesh</option>
+                                <option value="AR">Arunachal Pradesh</option>
+                                <option value="AS">Assam</option>
+                                <option value="BR">Bihar</option>
+                                <option value="CG">Chhattisgarh</option>
+                                <option value="DL">Delhi</option>
+                                <option value="GA">Goa</option>
+                                <option value="GJ">Gujarat</option>
+                                <option value="HR">Haryana</option>
+                                <option value="HP">Himachal Pradesh</option>
+                                <option value="JK">Jammu & Kashmir</option>
+                                <option value="JH">Jharkhand</option>
+                                <option value="KA">Karnataka</option>
+                                <option value="KL">Kerala</option>
+                                <option value="LA">Ladakh</option>
+                                <option value="LD">Lakshadweep</option>
+                                <option value="MH">Maharashtra</option>
+                                <option value="ML">Meghalaya</option>
+                                <option value="MN">Manipur</option>
+                                <option value="MP">Madhya Pradesh</option>
+                                <option value="MZ">Mizoram</option>
+                                <option value="NL">Nagaland</option>
+                                <option value="OD">Odisha</option>
+                                <option value="PB">Punjab</option>
+                                <option value="PY">Puducherry</option>
+                                <option value="RJ">Rajasthan</option>
+                                <option value="SK">Sikkim</option>
+                                <option value="TN">Tamil Nadu</option>
+                                <option value="TG">Telangana</option>
+                                <option value="TR">Tripura</option>
+                                <option value="UP">Uttar Pradesh</option>
+                                <option value="UT">Uttarakhand</option>
+                                <option value="WB">West Bengal</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>PIN Code *</label>
+                            <input type="text" id="zipCode" placeholder="Enter PIN code" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" id="country" value="India" disabled>
+                        </div>
+                    </div>
+                    <button class="checkout-btn" style="margin-top: 10px;" onclick="goToPayment()">Continue to Payment</button>
+                </div>
+
+                <!-- Payment Information -->
+                <div class="form-section" id="paymentSection" style="display: none;">
+                    <h3><i class="fa fa-credit-card"></i> Payment Method</h3>
+                    <div class="payment-methods">
+                        <div class="payment-option selected" data-method="cash_on_delivery" onclick="selectPaymentMethod(this)">
+                            <i class="fa fa-money-bill-wave"></i>
+                            <span>Cash on Delivery</span>
+                        </div>
+                        <div class="payment-option" data-method="card" onclick="selectPaymentMethod(this)">
+                            <i class="fa fa-credit-card"></i>
+                            <span>Credit/Debit Card</span>
+                        </div>
+                        <div class="payment-option" data-method="upi" onclick="selectPaymentMethod(this)">
+                            <i class="fa fa-mobile-alt"></i>
+                            <span>UPI</span>
+                        </div>
+                        <div class="payment-option" data-method="paypal" onclick="selectPaymentMethod(this)">
+                            <i class="fa fa-paypal"></i>
+                            <span>PayPal</span>
+                        </div>
+                        <div class="payment-option" data-method="mock_payment" onclick="selectPaymentMethod(this)" id="mockPaymentOption" style="display: none;">
+                            <i class="fa fa-flask"></i>
+                            <span>Test Payment (Mock)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Details (shown when card is selected) -->
+                    <div id="cardDetails" style="display: none; margin-top: 20px;">
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry Date</label>
+                                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" id="cardCvv" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Cardholder Name</label>
+                            <input type="text" id="cardName" placeholder="Name on card">
+                        </div>
+                    </div>
+                    
+                    <!-- UPI Details (shown when UPI is selected) -->
+                    <div id="upiDetails" style="display: none; margin-top: 20px;">
+                        <div class="form-group">
+                            <label>UPI ID</label>
+                            <input type="text" id="upiId" placeholder="yourname@upi">
+                        </div>
+                    </div>
+
+                    <button class="checkout-btn" style="margin-top: 20px;" onclick="goToReview()">Review Order</button>
+                    <button class="checkout-btn" style="margin-top: 10px; background: #6c757d;" onclick="goToShipping()">Back to Shipping</button>
+                </div>
+
+                <!-- Order Review -->
+                <div class="form-section" id="reviewSection" style="display: none;">
+                    <h3><i class="fa fa-clipboard-check"></i> Review Your Order</h3>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4 style="margin-top: 0;">Shipping Address</h4>
+                        <p id="reviewAddress" style="margin: 0; color: #666;"></p>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4 style="margin-top: 0;">Payment Method</h4>
+                        <p id="reviewPayment" style="margin: 0; color: #666;"></p>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4 style="margin-top: 0;">Shipping Method</h4>
+                        <p id="reviewShipping" style="margin: 0; color: #666;"></p>
+                    </div>
+
+                    <button class="checkout-btn" onclick="placeOrder()">Place Order</button>
+                    <button class="checkout-btn" style="margin-top: 10px; background: #6c757d;" onclick="goToPayment()">Back to Payment</button>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                
+                <div class="coupon-section">
+                    <input type="text" id="couponCode" placeholder="Enter coupon code">
+                    <button onclick="applyCoupon()">Apply</button>
+                </div>
+
+                <div class="summary-items" id="summaryItems">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+
+                <div class="summary-totals">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="summarySubtotal">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span id="summaryShipping">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (GST)</span>
+                        <span id="summaryTax">₹0</span>
+                    </div>
+                    <div class="summary-row" id="discountRow" style="display: none;">
+                        <span>Discount</span>
+                        <span id="summaryDiscount" style="color: #28a745;">-₹0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span id="summaryTotal">₹0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="auth-modal" onclick="closeAuthModal()">
+        <div class="auth-form" onclick="event.stopPropagation()">
+            <h2 id="auth-title">Login</h2>
+            <form id="auth-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Submit</button>
+                <button type="button" class="back-btn" onclick="closeAuthModal()" style="margin-top: 10px; background: #6c757d;">Back</button>
+            </form>
+            <div class="switch-form" style="text-align: center; margin-top: 15px;">
+                <a onclick="switchForm()">Switch to Signup</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let currentStep = 1;
+        let selectedShippingMethod = 'standard';
+        let selectedPaymentMethod = 'cash_on_delivery';
+        let orderTotals = {
+            subtotal: 0,
+            shippingCharge: 0,
+            taxAmount: 0,
+            discount: 0,
+            total: 0
+        };
+        let shippingRates = null;
+
+        // Razorpay Configuration (will be fetched from backend)
+        let RAZORPAY_CONFIG = {
+            key: '', // Will be fetched from backend
+            currency: 'INR',
+            name: 'Shri Manjunatha Shamiyana Works & Events',
+            description: 'Order Payment',
+            image: 'logo.jpg',
+            theme: {
+                color: '#8B4513'
+            }
+        };
+        
+        // Mock payment tracking
+        let isMockPaymentEnabled = false;
+        
+        // Fetch Razorpay key and payment mode from backend on page load
+        async function loadRazorpayKey() {
+            try {
+                // Load payment mode
+                const modeResponse = await fetch(`${API_BASE}/payment/mode`);
+                const modeData = await modeResponse.json();
+                if (modeData.success) {
+                    isMockPaymentEnabled = modeData.isMockPayment;
+                    console.log('Mock payment enabled:', isMockPaymentEnabled);
+                    
+                    // Show mock payment option if enabled
+                    if (isMockPaymentEnabled) {
+                        const mockOption = document.getElementById('mockPaymentOption');
+                        if (mockOption) {
+                            mockOption.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Load Razorpay key
+                const response = await fetch(`${API_BASE}/payment/key`);
+                const data = await response.json();
+                if (data.success) {
+                    RAZORPAY_CONFIG.key = data.key;
+                }
+            } catch (err) {
+                console.error('Error loading Razorpay key:', err);
+            }
+        }
+
+// Initialize
+        window.addEventListener('load', async () => {
+            // Allow guest checkout - no login required
+            
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                window.location.href = 'cart.html';
+                return;
+            }
+            renderOrderSummary();
+            updateUI();
+            loadUserData();
+            await loadRazorpayKey(); // Load Razorpay key from backend
+        });
+
+        function loadUserData() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                document.getElementById('guestNotice').style.display = 'none';
+            }
+        }
+
+        function updateUI() {
+            const token = localStorage.getItem('token');
+            document.getElementById('login-btn').style.display = token ? 'none' : 'block';
+            document.getElementById('logout-btn').style.display = token ? 'block' : 'none';
+        }
+
+        // Render order summary
+        function renderOrderSummary() {
+            const container = document.getElementById('summaryItems');
+            container.innerHTML = '';
+            
+            let subtotal = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'summary-item';
+                itemDiv.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="summary-item-details">
+                        <h4>${item.name}</h4>
+                        <p>Qty: ${item.quantity} × ₹${item.price}</p>
+                    </div>
+                    <div>₹${itemTotal}</div>
+                `;
+                container.appendChild(itemDiv);
+            });
+
+            orderTotals.subtotal = subtotal;
+            updateTotals();
+        }
+
+        // Calculate totals
+        async function updateTotals() {
+            const state = document.getElementById('state').value || 'default';
+            
+            try {
+                const response = await fetch(`${API_BASE}/orders/calculate-totals`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        items: cart,
+                        shippingAddress: { state: state },
+                        shippingMethod: selectedShippingMethod,
+                        couponCode: document.getElementById('couponCode').value
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    orderTotals = {
+                        subtotal: data.subtotal,
+                        shippingCharge: data.shippingCharge,
+                        taxAmount: data.taxAmount,
+                        discount: data.discount,
+                        total: data.total
+                    };
+                    shippingRates = data.shippingDetails;
+                }
+            } catch (err) {
+                console.error('Error calculating totals:', err);
+            }
+
+            // Update UI
+            document.getElementById('summarySubtotal').textContent = `₹${orderTotals.subtotal}`;
+            document.getElementById('summaryShipping').textContent = orderTotals.shippingCharge === 0 ? 'Free' : `₹${orderTotals.shippingCharge}`;
+            document.getElementById('summaryTax').textContent = `₹${orderTotals.taxAmount}`;
+            document.getElementById('summaryTotal').textContent = `₹${orderTotals.total}`;
+            
+            if (orderTotals.discount > 0) {
+                document.getElementById('discountRow').style.display = 'flex';
+                document.getElementById('summaryDiscount').textContent = `-₹${orderTotals.discount}`;
+            } else {
+                document.getElementById('discountRow').style.display = 'none';
+            }
+        }
+
+        // Apply coupon
+        async function applyCoupon() {
+            const code = document.getElementById('couponCode').value;
+            if (!code) {
+                alert('Please enter a coupon code');
+                return;
+            }
+            await updateTotals();
+            if (orderTotals.discount > 0) {
+                alert('Coupon applied successfully!');
+            } else {
+                alert('Invalid coupon code');
+            }
+        }
+
+        // Update shipping when state changes
+        async function updateShipping() {
+            await updateTotals();
+        }
+
+        // Shipping method selection
+        function selectShippingMethod(element, method) {
+            document.querySelectorAll('.shipping-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedShippingMethod = method;
+            updateTotals();
+        }
+
+        // Payment method selection
+        function selectPaymentMethod(element) {
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedPaymentMethod = element.dataset.method;
+            
+            // Show/hide payment details
+            document.getElementById('cardDetails').style.display = selectedPaymentMethod === 'card' ? 'block' : 'none';
+            document.getElementById('upiDetails').style.display = selectedPaymentMethod === 'upi' ? 'block' : 'none';
+        }
+
+        // Navigation
+        function goToPayment() {
+            // Validate shipping info
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const street = document.getElementById('street').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipCode = document.getElementById('zipCode').value;
+
+            if (!fullName || !phone || !email || !street || !city || !state || !zipCode) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Validate email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            document.getElementById('shippingSection').style.display = 'none';
+            document.getElementById('paymentSection').style.display = 'block';
+            document.getElementById('reviewSection').style.display = 'none';
+            
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step2').classList.add('active');
+        }
+
+        function goToShipping() {
+            document.getElementById('shippingSection').style.display = 'block';
+            document.getElementById('paymentSection').style.display = 'none';
+            document.getElementById('reviewSection').style.display = 'none';
+            
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.remove('completed');
+            document.getElementById('step1').classList.add('active');
+        }
+
+        function goToReview() {
+            // Validate payment details if needed
+            if (selectedPaymentMethod === 'card') {
+                const cardNumber = document.getElementById('cardNumber').value;
+                if (!cardNumber) {
+                    alert('Please enter card details');
+                    return;
+                }
+            }
+            if (selectedPaymentMethod === 'upi') {
+                const upiId = document.getElementById('upiId').value;
+                if (!upiId) {
+                    alert('Please enter UPI ID');
+                    return;
+                }
+            }
+
+            // Update review section
+            const fullName = document.getElementById('fullName').value;
+            const street = document.getElementById('street').value;
+            const landmark = document.getElementById('landmark').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipCode = document.getElementById('zipCode').value;
+            
+            document.getElementById('reviewAddress').innerHTML = `
+                ${fullName}<br>
+                ${street}${landmark ? ', ' + landmark : ''}<br>
+                ${city}, ${state} - ${zipCode}
+            `;
+
+            const paymentMethods = {
+                'cash_on_delivery': 'Cash on Delivery',
+                'card': 'Credit/Debit Card',
+                'upi': 'UPI',
+                'paypal': 'PayPal',
+                'mock_payment': 'Test Payment (Mock)'
+            };
+            document.getElementById('reviewPayment').textContent = paymentMethods[selectedPaymentMethod];
+            
+            const shippingMethods = {
+                'standard': 'Standard Shipping (5-7 days)',
+                'express': 'Express Shipping (2-3 days)',
+                'overnight': 'Overnight Delivery (1 day)'
+            };
+            document.getElementById('reviewShipping').textContent = shippingMethods[selectedShippingMethod] || 'Standard Shipping';
+
+            document.getElementById('shippingSection').style.display = 'none';
+            document.getElementById('paymentSection').style.display = 'none';
+            document.getElementById('reviewSection').style.display = 'block';
+            
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step3').classList.add('active');
+        }
+
+        // Razorpay Payment Handler - Creates order on backend first
+        async function initiateRazorpayPayment() {
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const amount = orderTotals.total;
+
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            try {
+                // Step 1: Create order on backend (this is the key fix!)
+                const orderResponse = await fetch(`${API_BASE}/payment/create-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: amount,
+                        currency: 'INR',
+                        receipt: 'order_' + Date.now()
+                    })
+                });
+
+                const orderData = await orderResponse.json();
+                
+                if (!orderData.success) {
+                    throw new Error(orderData.message || 'Failed to create payment order');
+                }
+
+                // Step 2: Now open Razorpay with the order_id from backend
+                const options = {
+                    key: RAZORPAY_CONFIG.key,
+                    amount: amount * 100, // Amount in paisa
+                    currency: 'INR',
+                    name: RAZORPAY_CONFIG.name,
+                    description: RAZORPAY_CONFIG.description,
+                    image: RAZORPAY_CONFIG.image,
+                    theme: RAZORPAY_CONFIG.theme,
+                    order_id: orderData.orderId, // Use order_id from backend!
+                    prefill: {
+                        name: fullName,
+                        email: email,
+                        contact: phone
+                    },
+                    handler: function(response) {
+                        // Payment successful - verify with backend
+                        handlePaymentSuccess(response, orderData.orderId);
+                    },
+                    modal: {
+                        ondismiss: function() {
+                            // Payment cancelled
+                            document.getElementById('loadingOverlay').classList.remove('active');
+                            handlePaymentFailure({ error: { description: 'Payment cancelled by user' } });
+                        }
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+                
+                // Hide loading when Razorpay opens
+                document.getElementById('loadingOverlay').classList.remove('active');
+                
+            } catch (error) {
+                document.getElementById('loadingOverlay').classList.remove('active');
+                console.error('Error creating order:', error);
+                alert('Failed to initiate payment. Please try again.');
+            }
+        }
+
+        // Handle successful payment
+        async function handlePaymentSuccess(response) {
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            const shippingAddress = {
+                street: document.getElementById('street').value,
+                landmark: document.getElementById('landmark').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zipCode: document.getElementById('zipCode').value,
+                country: 'India'
+            };
+
+            const orderData = {
+                customer: fullName,
+                email: email,
+                phone: phone,
+                items: cart,
+                shippingAddress: shippingAddress,
+                shippingMethod: selectedShippingMethod,
+                paymentMethod: 'razorpay',
+                paymentId: response.razorpay_payment_id,
+                subtotal: orderTotals.subtotal,
+                shippingCharge: orderTotals.shippingCharge,
+                taxAmount: orderTotals.taxAmount,
+                discount: orderTotals.discount,
+                total: orderTotals.total
+            };
+
+            try {
+                const apiResponse = await fetch(`${API_BASE}/orders/checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                const data = await apiResponse.json();
+
+                if (apiResponse.ok && data.success) {
+                    // Clear cart
+                    localStorage.setItem('cart', JSON.stringify([]));
+
+                    // Redirect to success page
+                    const orderId = data.order.orderId;
+                    const transactionId = response.razorpay_payment_id;
+                    const amount = orderTotals.total;
+                    window.location.href = `success.html?orderId=${orderId}&transactionId=${transactionId}&amount=${amount}`;
+                } else {
+                    alert('Payment successful but order creation failed. Please contact support.');
+                }
+            } catch (err) {
+                console.error('Error creating order:', err);
+                alert('Payment successful but order creation failed. Please contact support.');
+            }
+        }
+
+        // Handle failed payment
+        function handlePaymentFailure(error) {
+            const amount = orderTotals.total;
+            const errorCode = error.error.code || 'PAYMENT_FAILED';
+            const errorDescription = error.error.description || 'Transaction was declined by the payment gateway';
+
+            // Redirect to failure page
+            window.location.href = `failure.html?amount=${amount}&errorCode=${encodeURIComponent(errorCode)}&errorDescription=${encodeURIComponent(errorDescription)}`;
+        }
+
+        // Place order (now triggers Razorpay payment or mock payment)
+        async function placeOrder() {
+            // Validate all required fields before proceeding to payment
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const street = document.getElementById('street').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipCode = document.getElementById('zipCode').value;
+
+            if (!fullName || !phone || !email || !street || !city || !state || !zipCode) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Validate email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            // Check if this is a mock payment or test payment
+            if (selectedPaymentMethod === 'mock_payment' || isMockPaymentEnabled) {
+                // Handle mock payment
+                await processMockPayment();
+            } else {
+                // Initiate Razorpay payment
+                initiateRazorpayPayment();
+            }
+        }
+
+        // Process mock payment (simulates successful payment without Razorpay)
+        async function processMockPayment() {
+            // Show loading
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            const shippingAddress = {
+                street: document.getElementById('street').value,
+                landmark: document.getElementById('landmark').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zipCode: document.getElementById('zipCode').value,
+                country: 'India'
+            };
+
+            try {
+                // Step 1: Create a mock order on backend
+                const orderResponse = await fetch(`${API_BASE}/payment/create-order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: orderTotals.total,
+                        currency: 'INR',
+                        receipt: 'order_' + Date.now()
+                    })
+                });
+
+                const orderData = await orderResponse.json();
+                
+                if (!orderData.success) {
+                    throw new Error(orderData.message || 'Failed to create payment order');
+                }
+
+                console.log('Mock order created:', orderData);
+
+                // Step 2: Verify mock payment on backend
+                const verifyResponse = await fetch(`${API_BASE}/payment/verify-payment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        razorpay_order_id: orderData.orderId,
+                        razorpay_payment_id: 'mock_pay_' + Date.now(),
+                        razorpay_signature: 'mock_signature_' + Date.now(),
+                        isMock: true
+                    })
+                });
+
+                const verifyData = await verifyResponse.json();
+                
+                if (!verifyData.success) {
+                    throw new Error(verifyData.message || 'Payment verification failed');
+                }
+
+                console.log('Mock payment verified:', verifyData);
+
+                // Step 3: Create order in database
+                const orderDataDb = {
+                    customer: fullName,
+                    email: email,
+                    phone: phone,
+                    items: cart,
+                    shippingAddress: shippingAddress,
+                    shippingMethod: selectedShippingMethod,
+                    paymentMethod: 'mock_payment',
+                    paymentId: verifyData.paymentId || 'mock_pay_' + Date.now(),
+                    subtotal: orderTotals.subtotal,
+                    shippingCharge: orderTotals.shippingCharge,
+                    taxAmount: orderTotals.taxAmount,
+                    discount: orderTotals.discount,
+                    total: orderTotals.total
+                };
+
+                const apiResponse = await fetch(`${API_BASE}/orders/checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderDataDb)
+                });
+
+                const data = await apiResponse.json();
+
+                // Hide loading
+                document.getElementById('loadingOverlay').classList.remove('active');
+
+                if (apiResponse.ok && data.success) {
+                    // Clear cart
+                    localStorage.setItem('cart', JSON.stringify([]));
+
+                    // Redirect to success page
+                    const orderId = data.order.orderId;
+                    const transactionId = verifyData.paymentId || 'MOCK-' + Date.now();
+                    const amount = orderTotals.total;
+                    window.location.href = `success.html?orderId=${orderId}&transactionId=${transactionId}&amount=${amount}`;
+                } else {
+                    alert('Order creation failed. Please try again.');
+                }
+            } catch (error) {
+                document.getElementById('loadingOverlay').classList.remove('active');
+                console.error('Error processing mock payment:', error);
+                alert('Payment failed. Please try again.');
+            }
+        }
+
+        // Auth functions
+        function showAuthModal() {
+            document.getElementById('auth-modal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        let isLogin = true;
+        function switchForm() {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Signup';
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+
+            try {
+                const res = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('role', data.role);
+                    closeAuthModal();
+                    updateUI();
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            updateUI();
+        }
+    </script>
+</body>
+</html>

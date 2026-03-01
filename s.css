@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f9f9f9;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+}
+
+.logo {
+  height: 40px;
+}
+
+/* Search */
+.search-bar {
+  padding: 10px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  padding: 10px;
+  color: #777;
+  font-size: 14px;
+}
+
+/* Main Container */
+.container {
+  padding: 15px;
+}
+
+.container h1 {
+  margin-bottom: 10px;
+}
+
+.contact-info {
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.contact-form textarea {
+  resize: none;
+}
+
+.contact-form small {
+  color: #777;
+}
+
+/* Recaptcha */
+.recaptcha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  margin: 20px 0;
+  background: #fff;
+}
+
+/* Submit Button */
+button {
+  width: 100%;
+  padding: 14px;
+  background: #556b5d;
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
