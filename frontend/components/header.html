@@ -1,0 +1,47 @@
+<header>
+  <div class="header-container">
+
+    <div class="logo">
+      <a href="/pages/home/Landing.html">
+        <img src="/assets/images/logo.jpg" alt="Logo">
+      </a>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search...">
+      <button><i class="fa fa-search"></i></button>
+    </div>
+
+    <div class="mobile-menu-btn">☰</div>
+
+    <nav>
+      <ul>
+        <li><a href="/pages/home/Landing.html">Home</a></li>
+        <li><a href="/pages/shop/shop.html">Shop</a></li>
+        <li><a href="/pages/info/Service.html">Service</a></li>
+        <li><a href="/pages/info/About.html">About Us</a></li>
+        <li><a href="/pages/contact/Contact-us.html">Contact</a></li>
+        <li><a href="/pages/orders/track-order.html">Track Order</a></li>
+
+        <li id="login-btn">
+          <a href="#" onclick="showAuthModal('login')">Login</a>
+        </li>
+
+        <li id="signup-btn">
+          <a href="#" onclick="showAuthModal('signup')">Signup</a>
+        </li>
+
+        <li id="logout-btn" style="display:none;">
+          <a href="#" onclick="logout()">Logout</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="cart-icon">
+      <a href="/pages/cart/cart.html">
+        <i class="fa fa-shopping-cart"></i>
+      </a>
+    </div>
+
+  </div>
+</header>

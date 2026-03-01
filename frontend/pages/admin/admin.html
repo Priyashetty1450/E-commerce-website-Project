@@ -6,9 +6,11 @@
 
   <title>Admin Dashboard</title>
 
-  <link rel="stylesheet" href="/css/ii.css" />
-  <link rel="stylesheet" href="/css/admin.css" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../css/ii.css" />
+  <link rel="stylesheet" href="../../css/admin.css" />
 
+  <!-- FONT AWESOME -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
 </head>
@@ -17,18 +19,22 @@
 
 <header>
   <div class="header-container">
+
     <div class="logo">
-      <img src="/assets/images/logo.jpg" alt="Logo">
+      <img src="../../assets/images/logo.jpg" alt="Logo">
     </div>
 
     <nav>
       <ul>
-        <li><a href="/">Back to Site</a></li>
+        <!-- BACK TO MAIN SITE -->
+        <li><a href="../home/Landing.html">Back to Site</a></li>
+
         <li><a href="#add-product">Add Product</a></li>
         <li><a href="#products">Products</a></li>
         <li><a href="#orders">Orders</a></li>
       </ul>
     </nav>
+
   </div>
 </header>
 
@@ -36,7 +42,9 @@
 
   <h1>Admin Dashboard</h1>
 
+  <!-- SUMMARY -->
   <div class="summary">
+
     <div class="summary-item">
       <h3 id="total-products">0</h3>
       <p>Total Products</p>
@@ -46,16 +54,22 @@
       <h3 id="total-orders">0</h3>
       <p>Total Orders</p>
     </div>
+
   </div>
 
   <!-- ADD PRODUCT -->
   <section id="add-product" class="dashboard-section">
+
     <h2>Add New Product</h2>
 
     <form id="product-form">
+
       <input type="text" id="product-name" placeholder="Product Name" required>
+
       <input type="file" id="product-image" accept=".jpg,.jpeg" required>
+
       <input type="number" id="product-price" placeholder="Price" required>
+
       <input type="number" id="product-stock" placeholder="Stock" required>
 
       <select id="product-category" required>
@@ -68,20 +82,27 @@
       <textarea id="product-description" placeholder="Description"></textarea>
 
       <button type="submit" class="btn">Add Product</button>
+
     </form>
+
   </section>
 
   <!-- PRODUCT LIST -->
   <section id="products" class="dashboard-section">
+
     <h2>Product List</h2>
+
     <div id="product-list" class="product-list"></div>
+
   </section>
 
   <!-- ORDERS -->
   <section id="orders" class="dashboard-section">
+
     <h2>Order Tracking</h2>
 
     <table id="order-table">
+
       <thead>
         <tr>
           <th>Order ID</th>
@@ -95,13 +116,15 @@
       </thead>
 
       <tbody></tbody>
+
     </table>
 
   </section>
 
 </main>
 
-<script src="/js/admin.js"></script>
+<!-- JS -->
+<script src="../../js/admin.js"></script>
 
 </body>
 </html>

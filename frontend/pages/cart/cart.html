@@ -6,41 +6,21 @@
 
   <title>Shopping Cart</title>
 
+  <!-- GLOBAL CSS -->
   <link rel="stylesheet" href="/css/ii.css" />
   <link rel="stylesheet" href="/css/cart.css" />
 
+  <!-- FONT AWESOME -->
   <link rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
 </head>
 
 <body>
 
-<header>
-  <div class="header-container">
+<!-- ✅ GLOBAL HEADER -->
+<div id="header"></div>
 
-    <div class="logo">
-      <img src="/assets/images/logo.jpg">
-    </div>
-
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/pages/shop/shop.html">Shop</a></li>
-        <li><a href="/pages/info/Service.html">Service</a></li>
-        <li><a href="/pages/info/About.html">About</a></li>
-        <li><a href="/pages/contact/Contact-us.html">Contact</a></li>
-
-        <li id="login-btn"><a href="#">Login</a></li>
-        <li id="logout-btn" style="display:none;"><a href="#">Logout</a></li>
-      </ul>
-    </nav>
-
-    <div class="cart-icon">
-      <a href="/pages/cart/cart.html"><i class="fa fa-shopping-cart"></i></a>
-    </div>
-
-  </div>
-</header>
+<!-- ================= CART ================= -->
 
 <main class="cart-container">
 
@@ -60,6 +40,10 @@
 
 </main>
 
+<!-- ✅ LOAD GLOBAL HEADER -->
+<script src="/js/loadHeader.js"></script>
+
+<!-- PAGE JS -->
 <script src="/js/cart.js"></script>
 
 </body>

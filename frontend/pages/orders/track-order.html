@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,61 +8,23 @@
     content="Track Your Order - Shri Manjunatha Shamiyana Works & Events">
 
   <!-- GLOBAL CSS -->
-  <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- HEADER / COMMON CSS -->
-  <link rel="stylesheet" href="../../css/ii.css">
-
-  <!-- PAGE CSS (create this if you want custom styling) -->
-  <link rel="stylesheet" href="../../css/pages/track-order.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/ii.css">
+  <link rel="stylesheet" href="/css/pages/track-order.css">
 
   <!-- FONT AWESOME -->
   <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
 
   <title>Track Order - Shri Manjunatha Shamiyana Works & Events</title>
 </head>
 
 <body>
 
-<header>
-  <div class="header-container">
+<!-- ✅ GLOBAL NAVBAR -->
+<div id="header"></div>
 
-    <div class="logo">
-      <img src="../../assets/images/logo.jpg" alt="Shri Manjunatha">
-    </div>
-
-    <div class="search-bar">
-      <input type="text" placeholder="Search...">
-      <button><i class="fa fa-search"></i></button>
-    </div>
-
-    <div class="mobile-menu-btn">☰</div>
-
-    <nav>
-      <ul>
-        <li><a href="../misc/ii.html">Home</a></li>
-        <li><a href="../shop/shop.html">Shop</a></li>
-        <li><a href="../info/Service.html">Service</a></li>
-        <li><a href="../info/About.html">About Us</a></li>
-        <li><a href="../contact/Contact-us.html">Contact</a></li>
-        <li><a href="../orders/track-order.html" style="color: var(--secondary);">Track Order</a></li>
-
-        <li id="login-btn"><a href="#">Login</a></li>
-        <li id="logout-btn" style="display:none;"><a href="#">Logout</a></li>
-      </ul>
-    </nav>
-
-    <div class="cart-icon">
-      <a href="../cart/cart.html"><i class="fa fa-shopping-cart"></i></a>
-      <span class="cart-count">0</span>
-    </div>
-
-  </div>
-</header>
-
-<!-- TRACK ORDER SECTION -->
+<!-- ================= TRACK ORDER ================= -->
 
 <div class="track-container">
 
@@ -160,7 +121,7 @@
 
 </div>
 
-<!-- AUTH MODAL (unchanged structure) -->
+<!-- AUTH MODAL (if you still use it here) -->
 
 <div id="auth-modal" class="auth-modal">
   <div class="auth-form">
@@ -178,7 +139,10 @@
 </div>
 
 <!-- PAGE JS -->
-<script src="../../js/track-order.js"></script>
+<script src="/js/track-order.js"></script>
+
+<!-- LOAD GLOBAL HEADER -->
+<script src="/js/loadHeader.js"></script>
 
 </body>
 </html>

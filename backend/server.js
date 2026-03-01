@@ -1,13 +1,13 @@
 const dotenv = require("dotenv");
 const path = require("path");
 
-/* LOAD ENV FIRST */
 dotenv.config({ path: path.join(__dirname, "LS.env") });
 
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const morgan = require("morgan");
 
 /* ROUTES */
 const authRoutes = require("./routes/auth");
@@ -25,46 +25,44 @@ const PORT = process.env.PORT || 5000;
 
 /* ================= MIDDLEWARE ================= */
 
-app.use(cors());
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("dev"));
 
 /* ================= SERVE FRONTEND ================= */
 
-app.use(express.static(path.join(__dirname, "../frontend")));
+const frontendPath = path.join(__dirname, "../frontend");
+app.use(express.static(frontendPath));
 
 /* ================= DATABASE ================= */
 
-const mongoURI =
-  process.env.DATABASE_URL ||
-  "mongodb://127.0.0.1:27017/ShriManjunathaShamiyanaEvents";
+mongoose.set("strictQuery", false);
 
-mongoose
-  .connect(mongoURI)
-  .then(async () => {
-    console.log("✅ MongoDB Connected");
+mongoose.connect(process.env.DATABASE_URL)
+.then(async () => {
+  console.log("✅ MongoDB Connected");
 
-    /* SEED ADMIN */
-    const adminUsername = "Narsimha";
-    const adminPassword = "BSN@123";
+  const existingAdmin = await User.findOne({
+    username: process.env.ADMIN_USER
+  });
 
-    const existingAdmin = await User.findOne({ username: adminUsername });
+  if (!existingAdmin) {
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASS, 10);
 
-    if (!existingAdmin) {
-      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    await User.create({
+      username: process.env.ADMIN_USER,
+      password: hashedPassword,
+      role: "admin",
+    });
 
-      await User.create({
-        username: adminUsername,
-        password: hashedPassword,
-        role: "admin",
-      });
-
-      console.log("✅ Admin user created");
-    } else {
-      console.log("ℹ️ Admin already exists");
-    }
-  })
-  .catch((err) => console.error("❌ MongoDB Error:", err));
+    console.log("✅ Admin user created");
+  }
+})
+.catch((err) => {
+  console.error("❌ MongoDB Error:", err);
+  process.exit(1);
+});
 
 /* ================= API ROUTES ================= */
 
@@ -78,21 +76,8 @@ app.use("/api/payment", paymentRoutes);
 /* ================= INVENTORY ================= */
 
 app.get("/api/inventory", async (req, res) => {
-  try {
-    const items = await Item.find();
-    res.json(items);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-app.post("/api/inventory/seed", async (req, res) => {
-  try {
-    await Item.insertMany(req.body);
-    res.status(201).json({ message: "Inventory seeded successfully!" });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  const items = await Item.find();
+  res.json(items);
 });
 
 /* ================= HEALTH ================= */
@@ -101,21 +86,56 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK" });
 });
 
-/* ================= HOME ROUTE ================= */
+/* ================= CLEAN PAGE ROUTES ================= */
 
-app.get("/", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../frontend/pages/home/Landing.html")
-  );
-});
+app.get("/", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/home/Landing.html"))
+);
 
-/* ================= HANDLE ALL OTHER ROUTES ================= */
-/* (Express 5 safe – no '*' crash) */
+app.get("/shop", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/shop/shop.html"))
+);
+
+app.get("/collection", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/shop/collection.html"))
+);
+
+app.get("/cart", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/cart/cart.html"))
+);
+
+app.get("/checkout", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/checkout/checkout.html"))
+);
+
+app.get("/contact", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/contact/Contact-us.html"))
+);
+
+app.get("/help", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/contact/help.html"))
+);
+
+app.get("/about", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/info/About.html"))
+);
+
+app.get("/service", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/info/Service.html"))
+);
+
+app.get("/track-order", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/orders/track-order.html"))
+);
+
+app.get("/admin", (req, res) =>
+  res.sendFile(path.join(frontendPath, "pages/admin/admin.html"))
+);
+
+/* ================= 404 ================= */
 
 app.use((req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../frontend/pages/home/Landing.html")
-  );
+  res.status(404).send("❌ Page not found");
 });
 
 /* ================= START SERVER ================= */

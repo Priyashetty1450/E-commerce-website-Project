@@ -1,80 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Shri Manjunatha Shamiyana Works & Events</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="/css/ii.css" />
+  <meta name="description"
+    content="Shri Manjunatha Shamiyana Works & Events – trusted suppliers & manufacturers of tents, shamiyanas, and decoration items.">
 
+  <!-- GLOBAL CSS -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/ii.css">
+
+  <!-- FONT AWESOME -->
   <link rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+
+  <title>Shri Manjunatha - Shamiyana Works & Events</title>
 </head>
 
 <body>
 
-<!-- HEADER -->
+<!-- ✅ GLOBAL NAVBAR -->
+<div id="header"></div>
 
-<header>
-  <div class="header-container">
-
-    <div class="logo">
-      <img src="/assets/images/logo.jpg" alt="Logo">
-    </div>
-
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/pages/shop/shop.html">Shop</a></li>
-        <li><a href="/pages/info/About.html">About</a></li>
-        <li><a href="/pages/contact/Contact-us.html">Contact</a></li>
-        <li><a href="/pages/orders/track-order.html">Track Order</a></li>
-
-        <li id="login-btn"><a href="#">Login</a></li>
-        <li id="logout-btn" style="display:none;">
-          <a href="#" onclick="logout()">Logout</a>
-        </li>
-      </ul>
-    </nav>
-
-    <div class="cart-icon">
-      <a href="/pages/cart/cart.html">
-        <i class="fa fa-shopping-cart"></i>
-      </a>
-    </div>
-
-  </div>
-</header>
-
-<!-- HERO -->
+<!-- ================= HERO ================= -->
 
 <section class="hero">
-
   <div class="hero-content">
-    <h1>Welcome to Shri Manjunatha Shamiyana Works & Events</h1>
-    <p>Your one-stop solution for events, decoration & rentals</p>
-    <a href="/pages/shop/shop.html" class="shop-btn">Shop Now</a>
-  </div>
+    <h1>Elevate Your Space with Amazing Decor</h1>
+    <p>Discover our exquisite collection of Shamiyana decor items.</p>
 
+    <a href="/pages/shop/shop.html" class="btn">Shop Now</a>
+  </div>
 </section>
 
-<!-- DYNAMIC PRODUCTS -->
+<!-- ================= CATEGORIES ================= -->
+
+<section class="categories">
+  <h2 class="section-title">Our Collections</h2>
+
+  <div class="category-grid">
+
+    <div class="category-card">
+      <img src="/assets/images/wall decore.jpeg">
+      <h3>Wall Decor</h3>
+    </div>
+
+    <div class="category-card">
+      <img src="/assets/images/ShowPiece.jpeg">
+      <h3>Showpieces</h3>
+    </div>
+
+    <div class="category-card">
+      <img src="/assets/images/Tents.jpeg">
+      <h3>Tent Items</h3>
+    </div>
+
+    <div class="category-card">
+      <img src="/assets/images/Furniture.jpeg">
+      <h3>Home Furnishings</h3>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= FEATURED ================= -->
 
 <section class="featured">
-
-  <h2>Featured Products</h2>
-
-  <div id="product-container" class="product-grid">
-    <p>Loading products...</p>
-  </div>
-
+  <h2 class="section-title">Featured Products</h2>
+  <div id="product-grid" class="product-grid"></div>
 </section>
 
+<!-- ================= FOOTER ================= -->
+
 <footer>
-  <p>© 2025 Shri Manjunatha Shamiyana Works & Events</p>
+
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <h3>Information</h3>
+      <ul>
+        <li><a href="/pages/info/About.html">About Us</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Customer Service</h3>
+      <ul>
+        <li><a href="/pages/contact/Contact-us.html">Contact Us</a></li>
+        <li><a href="/pages/contact/help.html">Help</a></li>
+        <li><a href="/pages/orders/track-order.html">Track Order</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="copyright">
+    <p>© 2026 Shri Manjunatha Shamiyana Works & Events</p>
+  </div>
+
 </footer>
 
-<script src="/js/index.js"></script>
+<!-- ✅ LOAD GLOBAL HEADER -->
+<script src="/js/loadHeader.js"></script>
 
 </body>
 </html>

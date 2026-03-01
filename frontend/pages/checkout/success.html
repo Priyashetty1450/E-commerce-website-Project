@@ -1,126 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Payment Successful - Shri Manjunatha Shamiyana Works & Events">
-    <link rel="stylesheet" href="ii.css">
-    <title>Payment Successful - Shri Manjunatha Shamiyana Works & Events</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
-            padding: 20px;
-        }
-        .success-container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-        }
-        .success-icon {
-            width: 100px;
-            height: 100px;
-            background: #28a745;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-        }
-        .success-icon i {
-            font-size: 50px;
-            color: white;
-        }
-        h1 {
-            color: #28a745;
-            margin-bottom: 15px;
-            font-size: 28px;
-        }
-        .order-details {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 25px 0;
-            text-align: left;
-        }
-        .order-details p {
-            margin: 10px 0;
-            color: #555;
-        }
-        .order-details strong {
-            color: #333;
-        }
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            background: #8B4513;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            margin: 5px;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: #CD853F;
-        }
-        .btn-secondary {
-            background: #6c757d;
-        }
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Payment Successful - Shri Manjunatha Shamiyana Works & Events">
+
+<!-- GLOBAL CSS -->
+<link rel="stylesheet" href="/css/ii.css">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+<title>Payment Successful</title>
+
+<style>
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background:#f5f5f5;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0;
+padding:20px;
+}
+.success-container{
+background:white;
+padding:40px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+text-align:center;
+max-width:500px;
+width:100%;
+}
+.success-icon{
+width:100px;
+height:100px;
+background:#28a745;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 30px;
+}
+.success-icon i{
+font-size:50px;
+color:white;
+}
+h1{color:#28a745;margin-bottom:15px;}
+.order-details{
+background:#f8f9fa;
+padding:20px;
+border-radius:10px;
+margin:25px 0;
+text-align:left;
+}
+.btn{
+display:inline-block;
+padding:15px 30px;
+background:#8B4513;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-weight:600;
+margin:5px;
+}
+.btn-secondary{background:#6c757d;}
+</style>
 </head>
+
 <body>
-    <div class="success-container">
-        <div class="success-icon">
-            <i class="fa fa-check"></i>
-        </div>
-        <h1>Payment Successful!</h1>
-        <p>Thank you for your order. Your payment has been processed successfully.</p>
-        
-        <div class="order-details">
-            <p><strong>Order ID:</strong> <span id="orderId">N/A</span></p>
-            <p><strong>Transaction ID:</strong> <span id="transactionId">N/A</span></p>
-            <p><strong>Amount Paid:</strong> <span id="amount">₹0</span></p>
-            <p><strong>Date:</strong> <span id="date">N/A</span></p>
-        </div>
-        
-        <div>
-            <a href="ii.html" class="btn">Continue Shopping</a>
-            <a href="track-order.html" class="btn btn-secondary">Track Order</a>
-        </div>
-    </div>
 
-    <script>
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('orderId') || 'ORD-' + Date.now();
-        const transactionId = urlParams.get('transactionId') || 'TXN-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        const amount = urlParams.get('amount') || '0';
+<div class="success-container">
 
-        // Display order details
-        document.getElementById('orderId').textContent = orderId;
-        document.getElementById('transactionId').textContent = transactionId;
-        document.getElementById('amount').textContent = '₹' + amount;
-        document.getElementById('date').textContent = new Date().toLocaleDateString('en-IN', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+<div class="success-icon">
+<i class="fa fa-check"></i>
+</div>
 
-        // Clear cart after successful payment
-        localStorage.setItem('cart', JSON.stringify([]));
-    </script>
+<h1>Payment Successful!</h1>
+
+<p>Thank you for your order.</p>
+
+<div class="order-details">
+<p><strong>Order ID:</strong> <span id="orderId">N/A</span></p>
+<p><strong>Transaction ID:</strong> <span id="transactionId">N/A</span></p>
+<p><strong>Amount Paid:</strong> <span id="amount">₹0</span></p>
+<p><strong>Date:</strong> <span id="date">N/A</span></p>
+</div>
+
+<div>
+
+<a href="/pages/home/Landing.html" class="btn">
+Continue Shopping
+</a>
+
+<a href="/pages/orders/track-order.html" class="btn btn-secondary">
+Track Order
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+const urlParams=new URLSearchParams(window.location.search);
+
+const orderId=urlParams.get('orderId')||'ORD-'+Date.now();
+
+const transactionId=urlParams.get('transactionId')||
+'TXN-'+Math.random().toString(36).substr(2,9).toUpperCase();
+
+const amount=urlParams.get('amount')||'0';
+
+document.getElementById('orderId').textContent=orderId;
+document.getElementById('transactionId').textContent=transactionId;
+document.getElementById('amount').textContent='₹'+amount;
+
+document.getElementById('date').textContent=
+new Date().toLocaleDateString('en-IN',{
+year:'numeric',
+month:'long',
+day:'numeric'
+});
+
+/* CLEAR CART AFTER SUCCESS */
+localStorage.setItem('cart',JSON.stringify([]));
+
+</script>
+
 </body>
 </html>

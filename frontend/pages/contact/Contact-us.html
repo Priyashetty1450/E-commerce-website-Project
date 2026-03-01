@@ -1,187 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Contact Us | Sanskari Decor</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="contact.css">
-  <title>Contact Us | ShriManjunathaShamiyana&Events</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact Us | Shri Manjunatha</title>
+
+<!-- GLOBAL CSS -->
+<link rel="stylesheet" href="/css/contact.css">
+<link rel="stylesheet" href="/css/ii.css">
+
 </head>
+
 <body>
-    <style>
-        * {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
 
-body {
-  margin: 0;
-  background: #f9f9f9;
-}
+<!-- ✅ GLOBAL NAVBAR -->
+<div id="header"></div>
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-
-  padding: 12px;
-  background: #fff;
-}
-
-.logo {
-  height: 70px;
-}
-
-/* Search */
-.search-bar {
-  padding: 10px;
-}
-
-.search-bar input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-}
-
-/* Breadcrumb */
-.breadcrumb {
-  padding: 8px;
-  color: #777;
-  font-size: 16px;
-}
-.breadcrumb a{
-  text-decoration: none;
-}
-
-/* Main Container */
-.container {
-  padding: 8px;
-}
-
-.container h1 {
-  margin-bottom: 10px;
-}
-
-.contact-info {
-  font-size: 15px;
-  margin-bottom: 20px;
-}
-
-/* Form */
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-.contact-form textarea {
-  resize: none;
-}
-
-.contact-form small {
-  color: #777;
-}
-
-/* Recaptcha */
-.recaptcha {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  margin: 20px 0;
-  background: #fff;
-}
-
-/* Submit Button */
-button {
-  width: 100%;
-  padding: 14px;
-  background: #bb4704;
-  color: white;
-  border: none;
-  font-size: 16px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-    </style>
-
-<header class="header">
-  
-  <img src="logo.jpg" alt="BSN" class="logo">
-
-</header>
-
+<!-- ================= BREADCRUMB ================= -->
 
 <div class="breadcrumb">
-  <a href="ii.html">Home</a> &gt; Contact Us
+  <a href="/pages/home/Landing.html">Home</a> &gt; Contact Us
 </div>
 
+<!-- ================= CONTACT FORM ================= -->
+
 <section class="container">
-  <h1>Contact Us</h1>
 
-  <p class="contact-info">
-    You can reach out to us on 
-    <strong>wedding@sanskaridecor.com</strong> 
-    or via <strong>987654XXXX</strong>.
-  </p>
+<h1>Contact Us</h1>
 
-  <h3>Enter Your Details </h3>
+<p class="contact-info">
+You can reach us at
+<strong>wedding@sanskaridecor.com</strong>
+or <strong>987654XXXX</strong>
+</p>
 
-  <form class="contact-form">
-    <input type="text" placeholder="First Name" required>
-    <input type="text" placeholder="Last Name" required>
-    <input type="email" placeholder="Email ID (eg: abc@xyz.com)" required>
-    <input type="text" placeholder="Subject" required>
-    <label for="phone">Contact No:</label>
-<input type="tel" id="phone" name="phone" placeholder="Enter contact number" required>
-    <textarea placeholder="Message" rows="5" required></textarea>
-    <small>Describe your query in detail..</small>
+<h3>Enter Your Details</h3>
 
-    <!-- reCAPTCHA Placeholder -->
-    <div class="recaptcha">
-      <inputtype="checkbox"> enter your query 
-    </div>
+<form class="contact-form">
 
-    <button type="submit">Submit</button>
-  </form>
+<input name="firstName" placeholder="First Name" required>
+<input name="lastName" placeholder="Last Name" required>
+
+<input name="email" type="email"
+placeholder="Email ID (eg: abc@xyz.com)" required>
+
+<input name="subject" placeholder="Subject" required>
+
+<label>Contact No:</label>
+<input name="phone" type="tel" placeholder="Enter contact number" required>
+
+<textarea name="message" rows="5"
+placeholder="Message" required></textarea>
+
+<small>Describe your query in detail..</small>
+
+<div class="recaptcha">
+<input type="checkbox" required> I'm not a robot
+</div>
+
+<button type="submit">Submit</button>
+
+</form>
+
 </section>
+
+<!-- ✅ LOAD GLOBAL HEADER -->
+<script src="/js/loadHeader.js"></script>
 
 <script>
 const API_BASE = 'http://localhost:5000/api';
 
-document.querySelector('.contact-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = {
-        firstName: formData.get('firstName'),
-        lastName: formData.get('lastName'),
-        email: formData.get('email'),
-        subject: formData.get('subject'),
-        phone: formData.get('phone'),
-        message: formData.get('message')
-    };
+document.querySelector('.contact-form')
+.addEventListener('submit', async (e) => {
 
-    try {
-        const response = await fetch(`${API_BASE}/contact`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        if (response.ok) {
-            alert('Contact form submitted successfully!');
-            e.target.reset();
-        } else {
-            alert('Error: ' + result.message);
-        }
-    } catch (error) {
-        alert('Error submitting form: ' + error.message);
-    }
+e.preventDefault();
+
+const formData = new FormData(e.target);
+const data = Object.fromEntries(formData.entries());
+
+try {
+
+const res = await fetch(`${API_BASE}/contact`, {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify(data)
+});
+
+const result = await res.json();
+
+if(res.ok){
+alert('Contact form submitted successfully!');
+e.target.reset();
+}else{
+alert(result.message || 'Something went wrong');
+}
+
+} catch(err){
+alert('Server error');
+}
+
 });
 </script>
 

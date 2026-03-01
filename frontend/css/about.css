@@ -1,97 +1,192 @@
-.about-hero {
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-              url("../assets/images/homek.jpg") center/cover;
-  color: white;
-  text-align: center;
-  padding: 80px 20px;
+/* HERO */
+
+.about-hero{
+  background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
+  url("../assets/images/decoration.jpg") center/cover;
+  color:#fff;
+  text-align:center;
+  padding:100px 20px;
 }
 
-.about-container {
-  display: flex;
-  gap: 40px;
-  padding: 60px 10%;
-  align-items: center;
-  flex-wrap: wrap;
+.about-hero h1{
+  font-size:42px;
+  margin-bottom:10px;
 }
 
-.about-text {
-  flex: 1;
+.about-hero p{
+  font-size:18px;
 }
 
-.about-image img {
-  width: 100%;
-  max-width: 450px;
-  border-radius: 10px;
+/* ABOUT CONTAINER */
+
+.about-container{
+  display:flex;
+  gap:50px;
+  padding:60px 10%;
+  align-items:center;
+  flex-wrap:wrap;
 }
 
-.founder {
-  padding: 60px 10%;
-  background: #f9f9f9;
+.about-text{
+  flex:1;
 }
 
-.founder-box {
-  display: flex;
-  gap: 30px;
-  align-items: center;
-  flex-wrap: wrap;
+.about-text h2{
+  color:#8B4513;
+  margin-bottom:15px;
 }
 
-.founder-box img {
-  width: 250px;
-  border-radius: 10px;
+.about-text p{
+  line-height:1.7;
+  margin-bottom:15px;
 }
 
-.vision-mission {
-  display: flex;
-  gap: 20px;
-  padding: 60px 10%;
-  flex-wrap: wrap;
+.about-image{
+  flex:1;
 }
 
-.vm-box {
-  flex: 1;
-  background: white;
-  padding: 30px;
-  text-align: center;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.about-image img{
+  width:100%;
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
 }
 
-.vm-box i {
-  font-size: 35px;
-  color: #8b4513;
-  margin-bottom: 10px;
+/* FOUNDER */
+
+.founder{
+  padding:60px 10%;
+  background:#f9f9f9;
+  text-align:center;
 }
 
-.why-choose {
-  padding: 60px 10%;
-  text-align: center;
+.founder h2{
+  color:#8B4513;
+  margin-bottom:40px;
 }
 
-.features {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
+.founder-box{
+  display:flex;
+  gap:30px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
 }
 
-.feature {
-  background: #fff;
-  padding: 20px;
-  width: 180px;
-  border-radius: 10px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+.founder-box img{
+  width:220px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
 
-.feature i {
-  font-size: 28px;
-  color: #8b4513;
-  margin-bottom: 10px;
+/* VISION MISSION */
+
+.vision-mission{
+  display:flex;
+  gap:30px;
+  padding:60px 10%;
+  flex-wrap:wrap;
+  justify-content:center;
 }
 
-footer {
-  background: #3b2f2f;
-  color: #f5e6b3;
-  text-align: center;
-  padding: 15px;
+.vm-box{
+  flex:1;
+  min-width:250px;
+  background:#fff;
+  padding:30px;
+  text-align:center;
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+.vm-box i{
+  font-size:40px;
+  color:#8B4513;
+  margin-bottom:15px;
+}
+
+/* WHY CHOOSE US */
+
+.why-choose{
+  padding:60px 10%;
+  background:#f9f9f9;
+  text-align:center;
+}
+
+.why-choose h2{
+  color:#8B4513;
+  margin-bottom:40px;
+}
+
+.features{
+  display:flex;
+  flex-wrap:wrap;
+  gap:25px;
+  justify-content:center;
+}
+
+.feature{
+  background:#fff;
+  padding:25px;
+  width:180px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+
+.feature:hover{
+  transform:translateY(-5px);
+}
+
+.feature i{
+  font-size:30px;
+  color:#8B4513;
+  margin-bottom:10px;
+}
+
+/* FOOTER */
+
+footer{
+  text-align:center;
+  padding:20px;
+  background:#111;
+  color:#fff;
+  font-size:14px;
+}
+
+/* HEADER FIX ALIGN */
+
+.main-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 10%;
+  background:#fff;
+  box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.main-header nav a{
+  margin-left:25px;
+  text-decoration:none;
+  color:#333;
+  font-weight:500;
+}
+
+.main-header nav a.active,
+.main-header nav a:hover{
+  color:#8B4513;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.about-container{
+  flex-direction:column;
+  text-align:center;
+}
+
+.founder-box{
+  flex-direction:column;
+}
+
 }

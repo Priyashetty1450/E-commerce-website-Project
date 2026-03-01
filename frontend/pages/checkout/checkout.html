@@ -6,36 +6,24 @@
 
 <title>Checkout</title>
 
+<!-- GLOBAL CSS -->
 <link rel="stylesheet" href="/css/ii.css">
 <link rel="stylesheet" href="/css/checkout.css">
 
+<!-- FONT AWESOME -->
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
+<!-- RAZORPAY -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
 
-<header>
-  <div class="header-container">
+<!-- ✅ GLOBAL NAVBAR -->
+<div id="header"></div>
 
-    <div class="logo">
-      <img src="/assets/images/logo.jpg">
-    </div>
-
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/pages/shop/shop.html">Shop</a></li>
-        <li><a href="/pages/cart/cart.html">Cart</a></li>
-        <li id="login-btn"><a onclick="showAuthModal()">Login</a></li>
-        <li id="logout-btn" style="display:none;"><a onclick="logout()">Logout</a></li>
-      </ul>
-    </nav>
-
-  </div>
-</header>
+<!-- ================= CHECKOUT ================= -->
 
 <div class="checkout-container">
 
@@ -43,6 +31,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
 
   <div class="checkout-grid">
 
+    <!-- SHIPPING -->
     <div class="checkout-form">
 
       <h3>Shipping</h3>
@@ -79,6 +68,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
 
     </div>
 
+    <!-- ORDER SUMMARY -->
     <div class="order-summary">
 
       <h3>Order Summary</h3>
@@ -94,6 +84,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
 
 </div>
 
+<!-- LOGIN MODAL (kept for auth logic) -->
 <div id="auth-modal" class="auth-modal">
   <div class="auth-form">
     <h2>Login</h2>
@@ -103,6 +94,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
   </div>
 </div>
 
+<!-- ✅ LOAD GLOBAL HEADER -->
+<script src="/js/loadHeader.js"></script>
+
+<!-- PAGE JS -->
 <script src="/js/checkout.js"></script>
 
 </body>
