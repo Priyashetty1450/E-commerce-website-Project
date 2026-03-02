@@ -15,9 +15,11 @@ function getToken() {
 function requireLogin() {
   if (!getToken()) {
     showToast("Please login first", "error");
+
     setTimeout(() => {
       window.location.href = "/pages/auth/login.html";
     }, 1200);
+
     return false;
   }
   return true;
@@ -26,10 +28,22 @@ function requireLogin() {
 /* ================= TOAST ================= */
 
 function showToast(message, type = "success") {
+
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.innerText = message;
+
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.right = "20px";
+  toast.style.background = "#333";
+  toast.style.color = "#fff";
+  toast.style.padding = "12px 18px";
+  toast.style.borderRadius = "8px";
+  toast.style.zIndex = "9999";
+
   document.body.appendChild(toast);
+
   setTimeout(() => toast.remove(), 3000);
 }
 
@@ -40,10 +54,11 @@ function showLoader() {
     "<p class='loader'>Loading products...</p>";
 }
 
-/* ================= API CALL WRAPPER ================= */
+/* ================= API ================= */
 
 async function apiRequest(url, options = {}) {
   try {
+
     const res = await fetch(url, options);
 
     if (!res.ok) {
@@ -67,7 +82,6 @@ async function loadProducts() {
   showLoader();
 
   const data = await apiRequest(`${API_BASE}/products`);
-
   if (!data) return;
 
   inventory = data.map(p => ({
@@ -77,7 +91,7 @@ async function loadProducts() {
     img: p.image,
     desc: p.description || "",
     category: p.category || "general",
-    stock: p.stock || 0
+    stock: p.stock ?? 0
   }));
 
   renderProducts();
@@ -95,7 +109,7 @@ function renderProducts() {
     filtered = inventory.filter(p => p.category === currentFilter);
   }
 
-  if (filtered.length === 0) {
+  if (!filtered.length) {
     container.innerHTML = `<p class="no-products">No products found</p>`;
     return;
   }
@@ -119,6 +133,7 @@ function renderProducts() {
         >
           Quick View
         </button>
+
       </div>
 
     </div>
@@ -145,7 +160,11 @@ function filterItems(category, event) {
 function openDetails(id) {
 
   activeItem = inventory.find(p => p.id === id);
-  if (!activeItem) return;
+
+  if (!activeItem) {
+    showToast("Product not found", "error");
+    return;
+  }
 
   document.getElementById("mImg").src = activeItem.img;
   document.getElementById("mTitle").innerText = activeItem.title;
@@ -168,9 +187,14 @@ async function addToCart() {
 
   if (!requireLogin()) return;
 
+  if (!activeItem) {
+    showToast("No product selected", "error");
+    return;
+  }
+
   const qty = parseInt(document.getElementById("mQty").value);
 
-  if (qty < 1) {
+  if (!qty || qty < 1) {
     showToast("Invalid quantity", "error");
     return;
   }
@@ -185,7 +209,7 @@ async function addToCart() {
     quantity: qty
   };
 
- const res = await apiRequest(`${API_BASE}/cart/add`, {
+  const res = await apiRequest(`${API_BASE}/cart/add`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -208,6 +232,7 @@ async function addToCart() {
 async function updateCartBadge() {
 
   const badge = document.getElementById("cart-count");
+
   if (!badge || !getToken()) return;
 
   const data = await apiRequest(`${API_BASE}/cart`, {
@@ -221,7 +246,7 @@ async function updateCartBadge() {
   badge.innerText = count;
 }
 
-/* ================= AUTO BADGE REFRESH ================= */
+/* ================= AUTO REFRESH BADGE ================= */
 
 setInterval(() => {
   if (getToken()) updateCartBadge();
