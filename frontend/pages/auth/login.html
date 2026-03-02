@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../../css/auth.css" />
+
+  <!-- AUTH JS (must be in head for requireGuest) -->
+  <script src="../../js/auth.js"></script>
+
+  <script>
+    requireGuest();
+  </script>
+</head>
+
+<body class="auth-page">
+
+  <div class="auth-container">
+
+    <h2>Login</h2>
+
+    <div id="message" class="message" style="display:none;"></div>
+
+    <input
+      type="text"
+      id="username"
+      placeholder="Username"
+      required
+    />
+
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      required
+    />
+
+    <button class="auth-btn" onclick="login()">
+      Login
+    </button>
+
+    <p>
+      Don't have an account?
+      <a href="signup.html">Signup</a>
+    </p>
+
+    <div class="divider">OR</div>
+
+    <button class="google-btn" onclick="googleLogin()">
+      Continue with Google
+    </button>
+
+    <p>
+      <a href="reset-password.html">Forgot Password?</a>
+    </p>
+
+  </div>
+
+</body>
+</html>

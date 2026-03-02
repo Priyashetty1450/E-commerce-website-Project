@@ -4,52 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="description" content="Payment Successful - Shri Manjunatha Shamiyana Works & Events">
+<title>Order Success</title>
 
-<!-- GLOBAL CSS -->
 <link rel="stylesheet" href="/css/ii.css">
 
-<!-- FONT AWESOME -->
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
-<title>Payment Successful</title>
-
 <style>
 body{
-font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+font-family:Segoe UI;
 background:#f5f5f5;
-min-height:100vh;
 display:flex;
-align-items:center;
 justify-content:center;
-margin:0;
-padding:20px;
+align-items:center;
+min-height:100vh;
 }
+
 .success-container{
-background:white;
+background:#fff;
 padding:40px;
 border-radius:15px;
 box-shadow:0 10px 30px rgba(0,0,0,0.1);
-text-align:center;
-max-width:500px;
+max-width:520px;
 width:100%;
+text-align:center;
 }
+
 .success-icon{
-width:100px;
-height:100px;
+width:90px;
+height:90px;
 background:#28a745;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-margin:0 auto 30px;
+margin:0 auto 20px;
 }
-.success-icon i{
-font-size:50px;
-color:white;
-}
-h1{color:#28a745;margin-bottom:15px;}
+
+.success-icon i{font-size:40px;color:white;}
+
 .order-details{
 background:#f8f9fa;
 padding:20px;
@@ -57,17 +51,24 @@ border-radius:10px;
 margin:25px 0;
 text-align:left;
 }
+
 .btn{
 display:inline-block;
-padding:15px 30px;
+padding:14px 28px;
 background:#8B4513;
 color:white;
-text-decoration:none;
 border-radius:8px;
-font-weight:600;
+text-decoration:none;
 margin:5px;
+font-weight:600;
 }
+
 .btn-secondary{background:#6c757d;}
+
+.loader{
+text-align:center;
+padding:40px;
+}
 </style>
 </head>
 
@@ -75,30 +76,27 @@ margin:5px;
 
 <div class="success-container">
 
+<div id="loader" class="loader">Loading order...</div>
+
+<div id="successBox" style="display:none">
+
 <div class="success-icon">
 <i class="fa fa-check"></i>
 </div>
 
-<h1>Payment Successful!</h1>
-
-<p>Thank you for your order.</p>
+<h1>Order Placed Successfully!</h1>
+<p>Thank you for shopping with us 🎉</p>
 
 <div class="order-details">
-<p><strong>Order ID:</strong> <span id="orderId">N/A</span></p>
-<p><strong>Transaction ID:</strong> <span id="transactionId">N/A</span></p>
-<p><strong>Amount Paid:</strong> <span id="amount">₹0</span></p>
-<p><strong>Date:</strong> <span id="date">N/A</span></p>
+<p><strong>Order ID:</strong> <span id="orderId"></span></p>
+<p><strong>Transaction ID:</strong> <span id="transactionId"></span></p>
+<p><strong>Amount:</strong> ₹<span id="amount"></span></p>
+<p><strong>Payment Method:</strong> <span id="paymentMethod"></span></p>
+<p><strong>Date:</strong> <span id="date"></span></p>
 </div>
 
-<div>
-
-<a href="/pages/home/Landing.html" class="btn">
-Continue Shopping
-</a>
-
-<a href="/pages/orders/track-order.html" class="btn btn-secondary">
-Track Order
-</a>
+<a href="/pages/home/Landing.html" class="btn">Continue Shopping</a>
+<a href="/pages/orders/track-order.html" class="btn btn-secondary">Track Order</a>
 
 </div>
 
@@ -106,28 +104,70 @@ Track Order
 
 <script>
 
-const urlParams=new URLSearchParams(window.location.search);
+const API_BASE = "http://localhost:5000/api";
 
-const orderId=urlParams.get('orderId')||'ORD-'+Date.now();
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("orderId");
 
-const transactionId=urlParams.get('transactionId')||
-'TXN-'+Math.random().toString(36).substr(2,9).toUpperCase();
+/* ================= LOAD ORDER ================= */
 
-const amount=urlParams.get('amount')||'0';
+async function loadOrder() {
 
-document.getElementById('orderId').textContent=orderId;
-document.getElementById('transactionId').textContent=transactionId;
-document.getElementById('amount').textContent='₹'+amount;
+  if (!orderId) {
+    alert("Invalid order access");
+    window.location.href = "/pages/home/Landing.html";
+    return;
+  }
 
-document.getElementById('date').textContent=
-new Date().toLocaleDateString('en-IN',{
-year:'numeric',
-month:'long',
-day:'numeric'
-});
+  try {
 
-/* CLEAR CART AFTER SUCCESS */
-localStorage.setItem('cart',JSON.stringify([]));
+    const res = await fetch(
+      `${API_BASE}/orders/track/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      }
+    );
+
+    if (!res.ok) throw new Error();
+
+    const data = await res.json();
+
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("successBox").style.display = "block";
+
+    document.getElementById("orderId").innerText = data.orderId;
+
+    document.getElementById("transactionId").innerText =
+      data.transactionId || "COD";
+
+    document.getElementById("amount").innerText = data.total;
+
+    document.getElementById("paymentMethod").innerText =
+      data.paymentMethod.replaceAll("_"," ").toUpperCase();
+
+    document.getElementById("date").innerText =
+      new Date(data.createdAt).toLocaleDateString("en-IN",{
+        year:"numeric",
+        month:"long",
+        day:"numeric"
+      });
+
+    /* CLEAR CART AFTER SUCCESS */
+    localStorage.removeItem("cart");
+
+  } catch {
+
+    alert("Failed to load order");
+
+    window.location.href = "/pages/home/Landing.html";
+  }
+}
+
+/* ================= INIT ================= */
+
+loadOrder();
 
 </script>
 

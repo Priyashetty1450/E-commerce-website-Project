@@ -118,8 +118,9 @@ const orderSchema = new mongoose.Schema({
 });
 
 // Add initial status to statusHistory when order is created
-orderSchema.pre('save', function(next) {
+orderSchema.pre('save', function () {
   this.updatedAt = new Date();
+
   if (this.isNew && !this.statusHistory.length) {
     this.statusHistory.push({
       status: this.status || 'Order Placed',
@@ -127,7 +128,6 @@ orderSchema.pre('save', function(next) {
       note: 'Order placed successfully'
     });
   }
-  next();
 });
 
 // Index for faster queries (Note: orderId already has an index due to unique: true)

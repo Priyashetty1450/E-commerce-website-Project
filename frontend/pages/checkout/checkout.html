@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Checkout</title>
+  <title>Checkout</title>
 
-<!-- GLOBAL CSS -->
-<link rel="stylesheet" href="/css/ii.css">
-<link rel="stylesheet" href="/css/checkout.css">
+  <!-- 🔐 AUTH PROTECTION -->
+  <script src="/js/auth.js"></script>
+  <script>
+    requireLogin();
+  </script>
 
-<!-- FONT AWESOME -->
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  <!-- GLOBAL CSS -->
+  <link rel="stylesheet" href="/css/ii.css">
+  <link rel="stylesheet" href="/css/checkout.css">
 
-<!-- RAZORPAY -->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- FONT AWESOME -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+
+  <!-- RAZORPAY -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
 
-<!-- ✅ GLOBAL NAVBAR -->
+<!-- ✅ GLOBAL HEADER -->
 <div id="header"></div>
 
 <!-- ================= CHECKOUT ================= -->
@@ -31,52 +37,68 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
 
   <div class="checkout-grid">
 
-    <!-- SHIPPING -->
+    <!-- ================= SHIPPING ================= -->
     <div class="checkout-form">
 
-      <h3>Shipping</h3>
+      <h3>Shipping Details</h3>
 
-      <input id="fullName" placeholder="Full Name">
-      <input id="phone" placeholder="Phone">
-      <input id="email" placeholder="Email">
-      <input id="street" placeholder="Address">
-      <input id="city" placeholder="City">
+      <input id="fullName" placeholder="Full Name" required>
+      <input id="phone" placeholder="Phone Number" required>
+      <input id="email" placeholder="Email" required>
+      <input id="street" placeholder="Address" required>
+      <input id="city" placeholder="City" required>
+      <input id="state" placeholder="State" required>
+      <input id="zipCode" placeholder="Pincode" required>
 
-      <button class="checkout-btn" onclick="goToPayment()">Continue</button>
+      <button class="checkout-btn" onclick="goToPayment()">
+        Continue to Payment
+      </button>
 
+      <!-- ================= PAYMENT ================= -->
       <div id="paymentSection" style="display:none">
 
-        <h3>Payment</h3>
+        <h3>Select Payment Method</h3>
 
         <div class="payment-option selected"
-        data-method="cash_on_delivery"
-        onclick="selectPaymentMethod(this)">
-        COD
+             data-method="cash_on_delivery"
+             onclick="selectPaymentMethod(this)">
+          Cash on Delivery
         </div>
 
         <div class="payment-option"
-        data-method="razorpay"
-        onclick="selectPaymentMethod(this)">
-        Razorpay
+             data-method="razorpay"
+             onclick="selectPaymentMethod(this)">
+          Pay with Razorpay
         </div>
 
         <button class="checkout-btn" onclick="placeOrder()">
-        Place Order
+          Place Order
         </button>
 
       </div>
 
     </div>
 
-    <!-- ORDER SUMMARY -->
+    <!-- ================= ORDER SUMMARY ================= -->
     <div class="order-summary">
 
       <h3>Order Summary</h3>
 
+      <!-- CART ITEMS -->
       <div id="summaryItems"></div>
 
+      <hr>
+
       <p>Subtotal: ₹<span id="summarySubtotal">0</span></p>
-      <p>Total: ₹<span id="summaryTotal">0</span></p>
+
+      <p>Shipping: <span id="summaryShipping">₹0</span></p>
+
+      <!-- ✅ GST ROW -->
+      <p>GST (18%): ₹<span id="summaryTax">0</span></p>
+
+      <hr>
+
+      <h2>Total: ₹<span id="summaryTotal">0</span></h2>
 
     </div>
 
@@ -84,20 +106,15 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
 
 </div>
 
-<!-- LOGIN MODAL (kept for auth logic) -->
-<div id="auth-modal" class="auth-modal">
-  <div class="auth-form">
-    <h2>Login</h2>
-    <input id="username">
-    <input id="password" type="password">
-    <button onclick="login()">Submit</button>
-  </div>
+<!-- OPTIONAL LOADER -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner"></div>
 </div>
 
 <!-- ✅ LOAD GLOBAL HEADER -->
 <script src="/js/loadHeader.js"></script>
 
-<!-- PAGE JS -->
+<!-- ✅ CHECKOUT LOGIC -->
 <script src="/js/checkout.js"></script>
 
 </body>

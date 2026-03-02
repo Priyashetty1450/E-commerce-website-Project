@@ -1,616 +1,319 @@
-   const API_BASE = 'http://localhost:5000/api';
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let currentStep = 1;
-        let selectedShippingMethod = 'standard';
-        let selectedPaymentMethod = 'cash_on_delivery';
-        let orderTotals = {
-            subtotal: 0,
-            shippingCharge: 0,
-            taxAmount: 0,
-            discount: 0,
-            total: 0
-        };
-        let shippingRates = null;
+/* ================= CONFIG ================= */
 
-        // Razorpay Configuration (will be fetched from backend)
-        let RAZORPAY_CONFIG = {
-            key: '', // Will be fetched from backend
-            currency: 'INR',
-            name: 'Shri Manjunatha Shamiyana Works & Events',
-            description: 'Order Payment',
-            image: 'logo.jpg',
-            theme: {
-                color: '#8B4513'
-            }
-        };
-        
-        // Mock payment tracking
-        let isMockPaymentEnabled = false;
-        
-        // Fetch Razorpay key and payment mode from backend on page load
-        async function loadRazorpayKey() {
-            try {
-                // Load payment mode
-                const modeResponse = await fetch(`${API_BASE}/payment/mode`);
-                const modeData = await modeResponse.json();
-                if (modeData.success) {
-                    isMockPaymentEnabled = modeData.isMockPayment;
-                    console.log('Mock payment enabled:', isMockPaymentEnabled);
-                    
-                    // Show mock payment option if enabled
-                    if (isMockPaymentEnabled) {
-                        const mockOption = document.getElementById('mockPaymentOption');
-                        if (mockOption) {
-                            mockOption.style.display = 'block';
-                        }
-                    }
-                }
-                
-                // Load Razorpay key
-                const response = await fetch(`${API_BASE}/payment/key`);
-                const data = await response.json();
-                if (data.success) {
-                    RAZORPAY_CONFIG.key = data.key;
-                }
-            } catch (err) {
-                console.error('Error loading Razorpay key:', err);
-            }
-        }
+const API_BASE = "http://localhost:5000/api";
 
-// Initialize
-        window.addEventListener('load', async () => {
-            // Allow guest checkout - no login required
-            
-            if (cart.length === 0) {
-                alert('Your cart is empty!');
-                window.location.href = 'cart.html';
-                return;
-            }
-            renderOrderSummary();
-            updateUI();
-            loadUserData();
-            await loadRazorpayKey(); // Load Razorpay key from backend
-        });
+const state = {
+  cart: [],
+  totals: null,
+  shippingMethod: "standard",
+  paymentMethod: "cash_on_delivery",
+  razorpayKey: null,
+  isMockPayment: false,
+  isPlacingOrder: false
+};
 
-        function loadUserData() {
-            const token = localStorage.getItem('token');
-            if (token) {
-                document.getElementById('guestNotice').style.display = 'none';
-            }
-        }
+/* ================= DOM ================= */
 
-        function updateUI() {
-            const token = localStorage.getItem('token');
-            document.getElementById('login-btn').style.display = token ? 'none' : 'block';
-            document.getElementById('logout-btn').style.display = token ? 'block' : 'none';
-        }
+const $ = id => document.getElementById(id);
 
-        // Render order summary
-        function renderOrderSummary() {
-            const container = document.getElementById('summaryItems');
-            container.innerHTML = '';
-            
-            let subtotal = 0;
-            
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-                
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'summary-item';
-                itemDiv.innerHTML = `
-                    <img src="${item.image}" alt="${item.name}">
-                    <div class="summary-item-details">
-                        <h4>${item.name}</h4>
-                        <p>Qty: ${item.quantity} × ₹${item.price}</p>
-                    </div>
-                    <div>₹${itemTotal}</div>
-                `;
-                container.appendChild(itemDiv);
-            });
+/* ================= AUTH ================= */
 
-            orderTotals.subtotal = subtotal;
-            updateTotals();
-        }
+const getToken = () => localStorage.getItem("token");
 
-        // Calculate totals
-        async function updateTotals() {
-            const state = document.getElementById('state').value || 'default';
-            
-            try {
-                const response = await fetch(`${API_BASE}/orders/calculate-totals`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        items: cart,
-                        shippingAddress: { state: state },
-                        shippingMethod: selectedShippingMethod,
-                        couponCode: document.getElementById('couponCode').value
-                    })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    orderTotals = {
-                        subtotal: data.subtotal,
-                        shippingCharge: data.shippingCharge,
-                        taxAmount: data.taxAmount,
-                        discount: data.discount,
-                        total: data.total
-                    };
-                    shippingRates = data.shippingDetails;
-                }
-            } catch (err) {
-                console.error('Error calculating totals:', err);
-            }
+function requireAuth() {
+  if (!getToken()) {
+    window.location.href = "/pages/auth/login.html";
+    throw new Error("Not authenticated");
+  }
+}
 
-            // Update UI
-            document.getElementById('summarySubtotal').textContent = `₹${orderTotals.subtotal}`;
-            document.getElementById('summaryShipping').textContent = orderTotals.shippingCharge === 0 ? 'Free' : `₹${orderTotals.shippingCharge}`;
-            document.getElementById('summaryTax').textContent = `₹${orderTotals.taxAmount}`;
-            document.getElementById('summaryTotal').textContent = `₹${orderTotals.total}`;
-            
-            if (orderTotals.discount > 0) {
-                document.getElementById('discountRow').style.display = 'flex';
-                document.getElementById('summaryDiscount').textContent = `-₹${orderTotals.discount}`;
-            } else {
-                document.getElementById('discountRow').style.display = 'none';
-            }
-        }
+/* ================= SAFE TEXT SETTER ================= */
 
-        // Apply coupon
-        async function applyCoupon() {
-            const code = document.getElementById('couponCode').value;
-            if (!code) {
-                alert('Please enter a coupon code');
-                return;
-            }
-            await updateTotals();
-            if (orderTotals.discount > 0) {
-                alert('Coupon applied successfully!');
-            } else {
-                alert('Invalid coupon code');
-            }
-        }
+function setText(id, value) {
+  const el = $(id);
+  if (el) el.innerText = value;
+}
 
-        // Update shipping when state changes
-        async function updateShipping() {
-            await updateTotals();
-        }
+/* ================= TOAST ================= */
 
-        // Shipping method selection
-        function selectShippingMethod(element, method) {
-            document.querySelectorAll('.shipping-option').forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedShippingMethod = method;
-            updateTotals();
-        }
+function showToast(msg) {
+  alert(msg);
+}
 
-        // Payment method selection
-        function selectPaymentMethod(element) {
-            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            selectedPaymentMethod = element.dataset.method;
-            
-            // Show/hide payment details
-            document.getElementById('cardDetails').style.display = selectedPaymentMethod === 'card' ? 'block' : 'none';
-            document.getElementById('upiDetails').style.display = selectedPaymentMethod === 'upi' ? 'block' : 'none';
-        }
+/* ================= LOADER ================= */
 
-        // Navigation
-        function goToPayment() {
-            // Validate shipping info
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const street = document.getElementById('street').value;
-            const city = document.getElementById('city').value;
-            const state = document.getElementById('state').value;
-            const zipCode = document.getElementById('zipCode').value;
+function setLoading(show) {
+  $("loadingOverlay")?.classList.toggle("active", show);
+}
 
-            if (!fullName || !phone || !email || !street || !city || !state || !zipCode) {
-                alert('Please fill in all required fields');
-                return;
-            }
+/* ================= API CLIENT ================= */
 
-            // Validate email
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                alert('Please enter a valid email address');
-                return;
-            }
+async function api(url, options = {}) {
 
-            document.getElementById('shippingSection').style.display = 'none';
-            document.getElementById('paymentSection').style.display = 'block';
-            document.getElementById('reviewSection').style.display = 'none';
-            
-            document.getElementById('step1').classList.remove('active');
-            document.getElementById('step1').classList.add('completed');
-            document.getElementById('step2').classList.add('active');
-        }
+  const res = await fetch(`${API_BASE}${url}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getToken()}`,
+      ...options.headers
+    },
+    ...options
+  });
 
-        function goToShipping() {
-            document.getElementById('shippingSection').style.display = 'block';
-            document.getElementById('paymentSection').style.display = 'none';
-            document.getElementById('reviewSection').style.display = 'none';
-            
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step1').classList.remove('completed');
-            document.getElementById('step1').classList.add('active');
-        }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || "API Error");
+  }
 
-        function goToReview() {
-            // Validate payment details if needed
-            if (selectedPaymentMethod === 'card') {
-                const cardNumber = document.getElementById('cardNumber').value;
-                if (!cardNumber) {
-                    alert('Please enter card details');
-                    return;
-                }
-            }
-            if (selectedPaymentMethod === 'upi') {
-                const upiId = document.getElementById('upiId').value;
-                if (!upiId) {
-                    alert('Please enter UPI ID');
-                    return;
-                }
-            }
+  return res.json();
+}
 
-            // Update review section
-            const fullName = document.getElementById('fullName').value;
-            const street = document.getElementById('street').value;
-            const landmark = document.getElementById('landmark').value;
-            const city = document.getElementById('city').value;
-            const state = document.getElementById('state').value;
-            const zipCode = document.getElementById('zipCode').value;
-            
-            document.getElementById('reviewAddress').innerHTML = `
-                ${fullName}<br>
-                ${street}${landmark ? ', ' + landmark : ''}<br>
-                ${city}, ${state} - ${zipCode}
-            `;
+/* ================= INIT ================= */
 
-            const paymentMethods = {
-                'cash_on_delivery': 'Cash on Delivery',
-                'card': 'Credit/Debit Card',
-                'upi': 'UPI',
-                'paypal': 'PayPal',
-                'mock_payment': 'Test Payment (Mock)'
-            };
-            document.getElementById('reviewPayment').textContent = paymentMethods[selectedPaymentMethod];
-            
-            const shippingMethods = {
-                'standard': 'Standard Shipping (5-7 days)',
-                'express': 'Express Shipping (2-3 days)',
-                'overnight': 'Overnight Delivery (1 day)'
-            };
-            document.getElementById('reviewShipping').textContent = shippingMethods[selectedShippingMethod] || 'Standard Shipping';
+document.addEventListener("DOMContentLoaded", init);
 
-            document.getElementById('shippingSection').style.display = 'none';
-            document.getElementById('paymentSection').style.display = 'none';
-            document.getElementById('reviewSection').style.display = 'block';
-            
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step2').classList.add('completed');
-            document.getElementById('step3').classList.add('active');
-        }
+async function init() {
 
-        // Razorpay Payment Handler - Creates order on backend first
-        async function initiateRazorpayPayment() {
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const amount = orderTotals.total;
+  try {
 
-            // Show loading
-            document.getElementById('loadingOverlay').classList.add('active');
+    requireAuth();
 
-            try {
-                // Step 1: Create order on backend (this is the key fix!)
-                const orderResponse = await fetch(`${API_BASE}/payment/create-order`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        amount: amount,
-                        currency: 'INR',
-                        receipt: 'order_' + Date.now()
-                    })
-                });
+    setLoading(true);
 
-                const orderData = await orderResponse.json();
-                
-                if (!orderData.success) {
-                    throw new Error(orderData.message || 'Failed to create payment order');
-                }
+    await Promise.all([
+      loadPaymentConfig(),
+      loadCart()
+    ]);
 
-                // Step 2: Now open Razorpay with the order_id from backend
-                const options = {
-                    key: RAZORPAY_CONFIG.key,
-                    amount: amount * 100, // Amount in paisa
-                    currency: 'INR',
-                    name: RAZORPAY_CONFIG.name,
-                    description: RAZORPAY_CONFIG.description,
-                    image: RAZORPAY_CONFIG.image,
-                    theme: RAZORPAY_CONFIG.theme,
-                    order_id: orderData.orderId, // Use order_id from backend!
-                    prefill: {
-                        name: fullName,
-                        email: email,
-                        contact: phone
-                    },
-                    handler: function(response) {
-                        // Payment successful - verify with backend
-                        handlePaymentSuccess(response, orderData.orderId);
-                    },
-                    modal: {
-                        ondismiss: function() {
-                            // Payment cancelled
-                            document.getElementById('loadingOverlay').classList.remove('active');
-                            handlePaymentFailure({ error: { description: 'Payment cancelled by user' } });
-                        }
-                    }
-                };
+    renderSummary();
 
-                const rzp = new Razorpay(options);
-                rzp.open();
-                
-                // Hide loading when Razorpay opens
-                document.getElementById('loadingOverlay').classList.remove('active');
-                
-            } catch (error) {
-                document.getElementById('loadingOverlay').classList.remove('active');
-                console.error('Error creating order:', error);
-                alert('Failed to initiate payment. Please try again.');
-            }
-        }
+    await calculateTotals();
 
-        // Handle successful payment
-        async function handlePaymentSuccess(response) {
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
+  } catch (err) {
+    showToast(err.message);
+  }
+  finally {
+    setLoading(false);
+  }
+}
 
-            const shippingAddress = {
-                street: document.getElementById('street').value,
-                landmark: document.getElementById('landmark').value,
-                city: document.getElementById('city').value,
-                state: document.getElementById('state').value,
-                zipCode: document.getElementById('zipCode').value,
-                country: 'India'
-            };
+/* ================= LOAD PAYMENT CONFIG ================= */
 
-            const orderData = {
-                customer: fullName,
-                email: email,
-                phone: phone,
-                items: cart,
-                shippingAddress: shippingAddress,
-                shippingMethod: selectedShippingMethod,
-                paymentMethod: 'razorpay',
-                paymentId: response.razorpay_payment_id,
-                subtotal: orderTotals.subtotal,
-                shippingCharge: orderTotals.shippingCharge,
-                taxAmount: orderTotals.taxAmount,
-                discount: orderTotals.discount,
-                total: orderTotals.total
-            };
+async function loadPaymentConfig() {
 
-            try {
-                const apiResponse = await fetch(`${API_BASE}/orders/checkout`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                });
+  const key = await fetch(`${API_BASE}/payment/key`).then(r => r.json());
+  const mode = await fetch(`${API_BASE}/payment/mode`).then(r => r.json());
 
-                const data = await apiResponse.json();
+  state.razorpayKey = key.key;
+  state.isMockPayment = mode.isMockPayment;
+}
 
-                if (apiResponse.ok && data.success) {
-                    // Clear cart
-                    localStorage.setItem('cart', JSON.stringify([]));
+/* ================= LOAD CART ================= */
 
-                    // Redirect to success page
-                    const orderId = data.order.orderId;
-                    const transactionId = response.razorpay_payment_id;
-                    const amount = orderTotals.total;
-                    window.location.href = `success.html?orderId=${orderId}&transactionId=${transactionId}&amount=${amount}`;
-                } else {
-                    alert('Payment successful but order creation failed. Please contact support.');
-                }
-            } catch (err) {
-                console.error('Error creating order:', err);
-                alert('Payment successful but order creation failed. Please contact support.');
-            }
-        }
+async function loadCart() {
 
-        // Handle failed payment
-        function handlePaymentFailure(error) {
-            const amount = orderTotals.total;
-            const errorCode = error.error.code || 'PAYMENT_FAILED';
-            const errorDescription = error.error.description || 'Transaction was declined by the payment gateway';
+  const data = await api("/cart");
 
-            // Redirect to failure page
-            window.location.href = `failure.html?amount=${amount}&errorCode=${encodeURIComponent(errorCode)}&errorDescription=${encodeURIComponent(errorDescription)}`;
-        }
+  state.cart = data.items || [];
 
-        // Place order (now triggers Razorpay payment or mock payment)
-        async function placeOrder() {
-            // Validate all required fields before proceeding to payment
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const street = document.getElementById('street').value;
-            const city = document.getElementById('city').value;
-            const state = document.getElementById('state').value;
-            const zipCode = document.getElementById('zipCode').value;
+  if (!state.cart.length) {
+    window.location.href = "/pages/cart/cart.html";
+  }
+}
 
-            if (!fullName || !phone || !email || !street || !city || !state || !zipCode) {
-                alert('Please fill in all required fields');
-                return;
-            }
+/* ================= RENDER SUMMARY ================= */
 
-            // Validate email
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                alert('Please enter a valid email address');
-                return;
-            }
+function renderSummary() {
 
-            // Check if this is a mock payment or test payment
-            if (selectedPaymentMethod === 'mock_payment' || isMockPaymentEnabled) {
-                // Handle mock payment
-                await processMockPayment();
-            } else {
-                // Initiate Razorpay payment
-                initiateRazorpayPayment();
-            }
-        }
+  const container = $("summaryItems");
+  container.innerHTML = "";
 
-        // Process mock payment (simulates successful payment without Razorpay)
-        async function processMockPayment() {
-            // Show loading
-            document.getElementById('loadingOverlay').classList.add('active');
+  state.cart.forEach(item => {
 
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
+    const total = item.price * item.quantity;
 
-            const shippingAddress = {
-                street: document.getElementById('street').value,
-                landmark: document.getElementById('landmark').value,
-                city: document.getElementById('city').value,
-                state: document.getElementById('state').value,
-                zipCode: document.getElementById('zipCode').value,
-                country: 'India'
-            };
+    container.innerHTML += `
+      <div class="summary-item">
+        <img src="${item.image}">
+        <div>
+          <h4>${item.name}</h4>
+          <p>Qty: ${item.quantity}</p>
+        </div>
+        <div>₹${total}</div>
+      </div>
+    `;
+  });
+}
 
-            try {
-                // Step 1: Create a mock order on backend
-                const orderResponse = await fetch(`${API_BASE}/payment/create-order`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        amount: orderTotals.total,
-                        currency: 'INR',
-                        receipt: 'order_' + Date.now()
-                    })
-                });
+/* ================= CALCULATE TOTALS ================= */
 
-                const orderData = await orderResponse.json();
-                
-                if (!orderData.success) {
-                    throw new Error(orderData.message || 'Failed to create payment order');
-                }
+async function calculateTotals() {
 
-                console.log('Mock order created:', orderData);
+  const items = state.cart.map(item => ({
+    productId: item.productId?._id || item.productId,
+    quantity: item.quantity,
+    price: item.price
+  }));
 
-                // Step 2: Verify mock payment on backend
-                const verifyResponse = await fetch(`${API_BASE}/payment/verify-payment`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        razorpay_order_id: orderData.orderId,
-                        razorpay_payment_id: 'mock_pay_' + Date.now(),
-                        razorpay_signature: 'mock_signature_' + Date.now(),
-                        isMock: true
-                    })
-                });
+  state.totals = await api("/orders/calculate-totals", {
+    method: "POST",
+    body: JSON.stringify({
+      items,
+      shippingMethod: state.shippingMethod
+    })
+  });
 
-                const verifyData = await verifyResponse.json();
-                
-                if (!verifyData.success) {
-                    throw new Error(verifyData.message || 'Payment verification failed');
-                }
+  setText("summarySubtotal", state.totals.subtotal);
 
-                console.log('Mock payment verified:', verifyData);
+  setText(
+    "summaryShipping",
+    state.totals.shippingCharge
+      ? `₹${state.totals.shippingCharge}`
+      : "Free"
+  );
 
-                // Step 3: Create order in database
-                const orderDataDb = {
-                    customer: fullName,
-                    email: email,
-                    phone: phone,
-                    items: cart,
-                    shippingAddress: shippingAddress,
-                    shippingMethod: selectedShippingMethod,
-                    paymentMethod: 'mock_payment',
-                    paymentId: verifyData.paymentId || 'mock_pay_' + Date.now(),
-                    subtotal: orderTotals.subtotal,
-                    shippingCharge: orderTotals.shippingCharge,
-                    taxAmount: orderTotals.taxAmount,
-                    discount: orderTotals.discount,
-                    total: orderTotals.total
-                };
+  setText("summaryTax", state.totals.taxAmount);
 
-                const apiResponse = await fetch(`${API_BASE}/orders/checkout`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderDataDb)
-                });
+  setText("summaryTotal", state.totals.total);
+}
 
-                const data = await apiResponse.json();
+/* ================= SHIPPING VALIDATION ================= */
 
-                // Hide loading
-                document.getElementById('loadingOverlay').classList.remove('active');
+function getShippingData() {
 
-                if (apiResponse.ok && data.success) {
-                    // Clear cart
-                    localStorage.setItem('cart', JSON.stringify([]));
+  const data = {
+    fullName: $("fullName").value.trim(),
+    phone: $("phone").value.trim(),
+    email: $("email").value.trim(),
+    street: $("street").value.trim(),
+    city: $("city").value.trim(),
+    state: $("state").value.trim(),
+    zipCode: $("zipCode").value.trim()
+  };
 
-                    // Redirect to success page
-                    const orderId = data.order.orderId;
-                    const transactionId = verifyData.paymentId || 'MOCK-' + Date.now();
-                    const amount = orderTotals.total;
-                    window.location.href = `success.html?orderId=${orderId}&transactionId=${transactionId}&amount=${amount}`;
-                } else {
-                    alert('Order creation failed. Please try again.');
-                }
-            } catch (error) {
-                document.getElementById('loadingOverlay').classList.remove('active');
-                console.error('Error processing mock payment:', error);
-                alert('Payment failed. Please try again.');
-            }
-        }
+  if (Object.values(data).some(v => !v)) {
+    throw new Error("All fields required");
+  }
 
-        // Auth functions
-        function showAuthModal() {
-            document.getElementById('auth-modal').classList.add('active');
-        }
+  return data;
+}
 
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.remove('active');
-        }
+/* ================= CONTINUE TO PAYMENT ================= */
 
-        let isLogin = true;
-        function switchForm() {
-            isLogin = !isLogin;
-            document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Signup';
-        }
+function goToPayment() {
 
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+  try {
 
-            try {
-                const res = await fetch(`${API_BASE}${endpoint}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('role', data.role);
-                    closeAuthModal();
-                    updateUI();
-                } else {
-                    alert(data.message);
-                }
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        });
+    getShippingData();
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            updateUI();
-        }
+    $("paymentSection").style.display = "block";
+
+    window.scrollTo({
+      top: $("paymentSection").offsetTop - 100,
+      behavior: "smooth"
+    });
+
+  } catch (err) {
+    showToast(err.message);
+  }
+}
+
+/* ================= PAYMENT METHOD ================= */
+
+function selectPaymentMethod(el) {
+
+  document.querySelectorAll(".payment-option")
+    .forEach(i => i.classList.remove("selected"));
+
+  el.classList.add("selected");
+
+  state.paymentMethod = el.dataset.method;
+}
+
+/* ================= PLACE ORDER ================= */
+
+async function placeOrder() {
+
+  if (state.isPlacingOrder) return;
+
+  try {
+
+    state.isPlacingOrder = true;
+
+    const shipping = getShippingData();
+
+    if (!state.totals?.total) {
+      throw new Error("Invalid order amount");
+    }
+
+    if (state.paymentMethod === "razorpay" && !state.isMockPayment) {
+      return startRazorpay(shipping);
+    }
+
+    await createOrder(shipping, "cash_on_delivery");
+
+  }
+  catch (err) {
+    showToast(err.message);
+  }
+  finally {
+    state.isPlacingOrder = false;
+  }
+}
+
+/* ================= RAZORPAY ================= */
+
+async function startRazorpay(shipping) {
+
+  setLoading(true);
+
+  const order = await api("/payment/create-order", {
+    method: "POST",
+    body: JSON.stringify({ amount: state.totals.total })
+  });
+
+  setLoading(false);
+
+  const rzp = new Razorpay({
+    key: state.razorpayKey,
+    amount: state.totals.total * 100,
+    order_id: order.orderId,
+
+    handler: res => {
+      createOrder(shipping, "razorpay", res.razorpay_payment_id);
+    }
+  });
+
+  rzp.open();
+}
+
+/* ================= CREATE ORDER ================= */
+
+async function createOrder(shipping, method, paymentId = null) {
+
+  setLoading(true);
+
+  const data = await api("/orders/checkout", {
+    method: "POST",
+    body: JSON.stringify({
+      customer: shipping.fullName,
+      email: shipping.email,
+      phone: shipping.phone,
+      items: state.cart,
+      shippingAddress: shipping,
+      paymentMethod: method,
+      paymentId,
+      ...state.totals
+    })
+  });
+
+  setLoading(false);
+
+  if (data.success) {
+
+window.location.href =
+`${window.location.origin}/pages/checkout/success.html?orderId=${data.order.orderId}`;
+
+  } else {
+    throw new Error("Order failed");
+  }
+}

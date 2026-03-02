@@ -1,230 +1,218 @@
-const API_BASE = "/api";
+const API_BASE = "http://localhost:5000/api";
+let cartData = null;
 
-let isLogin = true;
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-/* ================= AUTH UI ================= */
-
-function updateUI() {
-  const token = localStorage.getItem("token");
-
-  const loginBtn = document.getElementById("login-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-
-  if (loginBtn && logoutBtn) {
-    loginBtn.style.display = token ? "none" : "block";
-    logoutBtn.style.display = token ? "block" : "none";
-  }
+/* ================= AUTH TOKEN ================= */
+function getToken() {
+  return localStorage.getItem("token");
 }
 
-function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  updateUI();
+/* ================= TOAST ================= */
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.innerText = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
 }
 
-/* ================= AUTH MODAL ================= */
-
-function showAuthModal(type) {
-  isLogin = type === "login";
-  document.getElementById("auth-modal").style.display = "flex";
+/* ================= LOADER ================= */
+function showLoader() {
+  document.getElementById("cart-items").innerHTML = "<p>Loading cart...</p>";
 }
 
-function closeAuthModal() {
-  document.getElementById("auth-modal").style.display = "none";
-}
+/* ================= FETCH CART ================= */
+async function fetchCart() {
+  if (!getToken()) return;
 
-function switchForm() {
-  isLogin = !isLogin;
-  document.getElementById("auth-title").textContent = isLogin
-    ? "Login"
-    : "Signup";
-}
-
-/* ================= LOGIN / SIGNUP ================= */
-
-const authForm = document.getElementById("auth-form");
-
-if (authForm) {
-  authForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    const endpoint = isLogin ? "/auth/login" : "/auth/signup";
-
-    try {
-      const res = await fetch(API_BASE + endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("role", data.role);
-
-        closeAuthModal();
-        updateUI();
-
-        if (data.role === "admin") {
-          window.location.href = "/pages/admin/admin.html";
-        }
-      } else {
-        alert(data.message);
-      }
-    } catch (err) {
-      alert("Auth error: " + err.message);
-    }
-  });
-}
-
-/* ================= GOOGLE LOGIN (DEMO SUPPORT) ================= */
-
-async function continueWithGoogle() {
   try {
-    const response = await fetch(API_BASE + "/auth/google");
-    const data = await response.json();
+    showLoader();
 
-    if (data.demoMode) {
-      const email = prompt("Enter demo email:");
-      if (!email) return;
-
-      const name = prompt("Enter name (optional)");
-
-      const demoRes = await fetch(API_BASE + "/auth/google/demo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name }),
-      });
-
-      const demoData = await demoRes.json();
-
-      if (demoData.success) {
-        localStorage.setItem("token", demoData.token);
-        localStorage.setItem("role", demoData.role);
-        updateUI();
-        closeAuthModal();
+    const res = await fetch(`${API_BASE}/cart`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`
       }
-    } else if (data.authUrl) {
-      window.location.href = data.authUrl;
-    }
+    });
+
+    if (!res.ok) throw new Error();
+
+    const data = await res.json();
+
+    cartData = data;
+
+    renderCart();
+    updateCartBadge();
+
   } catch (err) {
-    alert("Google login failed");
+    console.log(err);
+    showToast("Failed to load cart", "error");
   }
 }
 
-/* ================= CART RENDER ================= */
-
+/* ================= RENDER CART ================= */
 function renderCart() {
-  const cartContainer = document.getElementById("cart-items");
-  const summaryBox = document.getElementById("cart-summary");
+  const container = document.getElementById("cart-items");
+  const summary = document.getElementById("cart-summary");
+  const empty = document.getElementById("empty-cart");
 
-  if (!cartContainer) return;
+  if (!container) return;
 
-  cartContainer.innerHTML = "";
+  container.innerHTML = "";
 
-  if (cart.length === 0) {
-    cartContainer.innerHTML = `
-      <div class="empty-cart">
-        <h2>Your cart is empty</h2>
-        <a href="/">Continue Shopping</a>
-      </div>`;
-    summaryBox.style.display = "none";
+  if (!cartData || !cartData.items || cartData.items.length === 0) {
+    empty.style.display = "block";
+    summary.style.display = "none";
     return;
   }
+
+  empty.style.display = "none";
 
   let totalItems = 0;
   let totalAmount = 0;
 
-  cart.forEach((item, index) => {
+  cartData.items.forEach(item => {
+
+    const product = item.productId || {};
+
+    const productId = product._id || item.productId;
+
+    const stock = product.stock ?? "N/A";
+
     const itemTotal = item.price * item.quantity;
 
     totalItems += item.quantity;
     totalAmount += itemTotal;
 
-    const cartItem = document.createElement("div");
-    cartItem.className = "cart-item";
+    const div = document.createElement("div");
+    div.className = "cart-item";
 
-    cartItem.innerHTML = `
-      <img src="${item.image}" alt="${item.name}">
+    div.innerHTML = `
+      <img src="${item.image}" />
 
-      <div class="cart-item-details">
+      <div class="cart-details">
         <h3>${item.name}</h3>
         <p>₹${item.price}</p>
+        <p class="stock">Stock: ${stock}</p>
       </div>
 
-      <div class="cart-item-quantity">
-        <button onclick="updateQuantity(${index}, -1)">-</button>
-        <input type="number" value="${item.quantity}"
-          min="1"
-          onchange="changeQuantity(${index}, this.value)">
-        <button onclick="updateQuantity(${index}, 1)">+</button>
+      <div class="cart-qty">
+        <button onclick="changeQty('${productId}', -1)">-</button>
+        <span>${item.quantity}</span>
+        <button onclick="changeQty('${productId}', 1)">+</button>
       </div>
 
-      <div class="cart-item-total">₹${itemTotal}</div>
+      <div class="cart-total">
+        ₹${itemTotal}
+      </div>
 
-      <button class="remove-btn"
-        onclick="removeFromCart(${index})">Remove</button>
+      <button class="remove-btn" onclick="removeItem('${productId}')">
+        <i class="fa fa-trash"></i>
+      </button>
     `;
 
-    cartContainer.appendChild(cartItem);
+    container.appendChild(div);
   });
 
-  document.getElementById("total-items").textContent = totalItems;
-  document.getElementById("total-amount").textContent = totalAmount;
+  document.getElementById("total-items").innerText = totalItems;
+  document.getElementById("total-amount").innerText = totalAmount;
 
-  summaryBox.style.display = "block";
+  summary.style.display = "block";
 }
 
-/* ================= CART ACTIONS ================= */
+/* ================= CHANGE QTY ================= */
+async function changeQty(productId, delta) {
 
-function updateQuantity(index, change) {
-  cart[index].quantity += change;
+  const item = cartData.items.find(i =>
+    (i.productId._id || i.productId) === productId
+  );
 
-  if (cart[index].quantity < 1) {
-    cart[index].quantity = 1;
+  if (!item) return;
+
+  const newQty = item.quantity + delta;
+
+  if (newQty < 1) return;
+
+  const stock = item.productId?.stock;
+
+  if (stock && newQty > stock) {
+    showToast("Stock limit reached", "error");
+    return;
   }
 
-  saveCart();
-}
+  try {
+    await fetch(`${API_BASE}/cart/${productId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({ quantity: newQty })
+    });
 
-function changeQuantity(index, qty) {
-  const quantity = parseInt(qty);
+    fetchCart();
 
-  if (quantity > 0) {
-    cart[index].quantity = quantity;
-    saveCart();
+  } catch {
+    showToast("Update failed", "error");
   }
 }
 
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  saveCart();
+/* ================= REMOVE ITEM ================= */
+async function removeItem(productId) {
+  try {
+    await fetch(`${API_BASE}/cart/${productId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${getToken()}`
+      }
+    });
+
+    showToast("Item removed");
+    fetchCart();
+
+  } catch {
+    showToast("Remove failed", "error");
+  }
 }
 
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
+/* ================= CLEAR CART ================= */
+async function clearCart() {
+  if (!confirm("Clear cart?")) return;
+
+  await fetch(`${API_BASE}/cart`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${getToken()}`
+    }
+  });
+
+  fetchCart();
 }
 
 /* ================= CHECKOUT ================= */
-
 function goToCheckout() {
-  if (cart.length === 0) {
-    alert("Your cart is empty");
+  if (!cartData || cartData.items.length === 0) {
+    showToast("Cart is empty", "error");
     return;
   }
 
   window.location.href = "/pages/checkout/checkout.html";
 }
 
-/* ================= INIT ================= */
+/* ================= BADGE UPDATE ================= */
+function updateCartBadge() {
 
-window.addEventListener("load", () => {
-  updateUI();
-  renderCart();
-});
+  const badge = document.getElementById("cart-count");
+
+  if (!badge || !cartData) return;
+
+  const count = cartData.items.reduce((sum, i) => sum + i.quantity, 0);
+
+  badge.innerText = count;
+}
+
+/* ================= AUTO REFRESH ================= */
+setInterval(() => {
+  if (getToken()) fetchCart();
+}, 30000);
+
+/* ================= INIT ================= */
+window.addEventListener("DOMContentLoaded", fetchCart);

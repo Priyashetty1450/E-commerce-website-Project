@@ -1,4 +1,6 @@
-body {
+/* ================= AUTH PAGE LAYOUT ================= */
+
+.auth-page {
   font-family: Arial, sans-serif;
   background: #f5f5f5;
   display: flex;
@@ -7,23 +9,35 @@ body {
   min-height: 100vh;
 }
 
+
+/* ================= CONTAINER ================= */
+
+.auth-container,
 .reset-container {
-  background: white;
+  background: #ffffff;
   padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
   width: 90%;
   max-width: 400px;
+  animation: fadeIn 0.4s ease;
 }
 
+
+/* ================= HEADING ================= */
+
+.auth-container h2,
 .reset-container h2 {
   color: #8b4513;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
+
+/* ================= INPUTS ================= */
+
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 input {
@@ -31,6 +45,8 @@ input {
   padding: 12px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
+  transition: 0.3s;
+  font-size: 14px;
 }
 
 input:focus {
@@ -38,21 +54,85 @@ input:focus {
   outline: none;
 }
 
+
+/* ================= BUTTON ================= */
+
+.auth-container button,
+.auth-btn,
 .reset-btn {
   width: 100%;
   padding: 12px;
   background: linear-gradient(135deg, #8b4513, #a0522d);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 12px;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.auth-container button:hover,
+.auth-btn:hover,
+.reset-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+
+/* ================= GOOGLE BUTTON ================= */
+
+.google-btn {
+  width: 100%;
+  padding: 12px;
+  background: #db4437;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  margin-top: 10px;
+  font-size: 15px;
+  transition: 0.3s;
 }
 
+.google-btn:hover {
+  background: #c1351d;
+}
+
+
+/* ================= LINKS ================= */
+
+.auth-container p,
+.auth-links,
+.back-link {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 14px;
+}
+
+.auth-container a,
+.auth-links a,
+.back-link a {
+  color: #8b4513;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-container a:hover,
+.auth-links a:hover,
+.back-link a:hover {
+  text-decoration: underline;
+}
+
+
+/* ================= MESSAGE BOX ================= */
+
 .message {
-  padding: 10px;
-  border-radius: 5px;
+  padding: 12px;
+  border-radius: 6px;
   margin-bottom: 15px;
   text-align: center;
+  font-size: 14px;
 }
 
 .success {
@@ -65,12 +145,69 @@ input:focus {
   color: #721c24;
 }
 
-.back-link {
+
+/* ================= DIVIDER ================= */
+
+.divider {
   text-align: center;
-  margin-top: 15px;
+  margin: 18px 0;
+  color: #aaa;
+  font-size: 13px;
 }
 
-.back-link a {
-  color: #8b4513;
-  text-decoration: none;
+
+/* ================= MODAL ================= */
+
+.auth-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 350px;
+  max-width: 90%;
+  position: relative;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.auth-box input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

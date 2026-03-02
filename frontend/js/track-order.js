@@ -1,275 +1,210 @@
-  const API_BASE = 'http://localhost:5000/api';
-        
-        // Order status order for timeline
-        const STATUS_ORDER = [
-            'Order Placed',
-            'Order Packed',
-            'Order Shipped',
-            'Order Out for Delivery',
-            'Delivered'
-        ];
+const API_BASE = "http://localhost:5000/api";
 
-        let isLogin = true;
+const STATUS_ORDER = [
+  "Order Placed",
+  "Order Packed",
+  "Order Shipped",
+  "Order Out for Delivery",
+  "Delivered"
+];
 
-        // Authentication functions
-        function showAuthModal(type) {
-            isLogin = type === 'login';
-            document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Signup';
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
+let pollingInterval = null;
 
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
+/* ================= HELPERS ================= */
 
-        function switchForm() {
-            isLogin = !isLogin;
-            document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Signup';
-        }
+const $ = (id) => document.getElementById(id);
 
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+function getToken() {
+  return localStorage.getItem("token");
+}
 
-            try {
-                const res = await fetch(`${API_BASE}${endpoint}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('role', data.role);
-                    closeAuthModal();
-                    updateUI();
-                    if (data.role === 'admin') window.location.href = 'admin.html';
-                } else {
-                    alert(data.message);
-                }
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
-        });
+function formatDate(dateString) {
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            updateUI();
-        }
+/* ================= UI STATES ================= */
 
-        function updateUI() {
-            const token = localStorage.getItem('token');
-            document.getElementById('login-btn').style.display = token ? 'none' : 'block';
-            document.getElementById('logout-btn').style.display = token ? 'block' : 'none';
-        }
+function showLoader() {
+  $("orderResult").classList.remove("active");
+  $("errorMessage").classList.remove("active");
+}
 
-        function forgotPassword() {
-            const email = prompt('Enter your email address:');
-            if (email) {
-                alert('If an account with that email exists, a reset link has been sent.');
-            }
-        }
+function showError(msg) {
+  $("errorText").innerText = msg;
+  $("errorMessage").classList.add("active");
+}
 
-        async function continueWithGoogle() {
-            try {
-                // Get Google OAuth URL from backend
-                const response = await fetch(`${API_BASE}/auth/google`, {
-                    method: 'GET'
-                });
-                
-                const data = await response.json();
-                
-                if (data.demoMode) {
-                    // Demo mode - use demo login
-                    const email = prompt('Demo Mode: Please enter your email:');
-                    if (!email) return;
-                    
-                    const name = prompt('Demo Mode: Please enter your name (optional):');
-                    
-                    const demoResponse = await fetch(`${API_BASE}/auth/google/demo`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, name: name || '' })
-                    });
-                    
-                    const demoData = await demoResponse.json();
-                    
-                    if (demoData.success) {
-                        localStorage.setItem('token', demoData.token);
-                        localStorage.setItem('role', demoData.role);
-                        closeAuthModal();
-                        updateUI();
-                        alert('Successfully logged in with Google (Demo)!');
-                    } else {
-                        alert(demoData.message || 'Demo login failed');
-                    }
-                } else if (data.authUrl) {
-                    // Real Google OAuth - redirect to Google
-                    window.location.href = data.authUrl;
-                }
-            } catch (err) {
-                alert('Error initiating Google login. Please try again.');
-                console.error(err);
-            }
-        }
+function hideError() {
+  $("errorMessage").classList.remove("active");
+}
 
-        // Track order function
-        async function trackOrder() {
-            const orderId = document.getElementById('orderIdInput').value.trim();
-            const email = document.getElementById('emailInput').value.trim();
-            
-            if (!orderId) {
-                showError('Please enter an order ID.');
-                return;
-            }
-            
-            if (!email) {
-                showError('Please enter your email address.');
-                return;
-            }
+/* ================= TRACK ORDER ================= */
 
-            try {
-                const response = await fetch(`${API_BASE}/orders/track/${orderId}?email=${encodeURIComponent(email)}`);
-                const data = await response.json();
+async function trackOrder() {
+  const orderId = $("orderIdInput").value.trim();
+  const email = $("emailInput").value.trim();
 
-                if (response.ok) {
-                    displayOrder(data);
-                    hideError();
-                } else {
-                    showError(data.message || 'Order not found. Please check your order ID and email address.');
-                }
-            } catch (err) {
-                showError('Error tracking order. Please try again later.');
-                console.error('Error tracking order:', err);
-            }
-        }
+  if (!orderId) return showError("Enter Order ID");
 
-        function showError(message) {
-            document.getElementById('errorText').textContent = message;
-            document.getElementById('errorMessage').classList.add('active');
-            document.getElementById('orderResult').classList.remove('active');
-        }
+  showLoader();
 
-        function hideError() {
-            document.getElementById('errorMessage').classList.remove('active');
-        }
+  try {
+    let url = `${API_BASE}/orders/track/${orderId}`;
 
-        function displayOrder(order) {
-            // Display order details
-            document.getElementById('resultOrderId').textContent = order.orderId;
-            document.getElementById('resultCustomer').textContent = order.customer || 'N/A';
-            document.getElementById('resultDate').textContent = formatDate(order.createdAt);
-            document.getElementById('resultTotal').textContent = `₹${order.total || 0}`;
-            document.getElementById('resultProducts').textContent = order.product || 'N/A';
-            document.getElementById('resultQuantity').textContent = order.quantity || 0;
+    if (!getToken()) {
+      if (!email) return showError("Enter your email");
+      url += `?email=${encodeURIComponent(email)}`;
+    }
 
-            // Display shipping address if available
-            if (order.shippingAddress) {
-                const address = order.shippingAddress;
-                const addressText = [
-                    address.street,
-                    address.city,
-                    address.state,
-                    address.zipCode,
-                    address.country
-                ].filter(part => part).join(', ');
-                
-                if (addressText) {
-                    document.getElementById('resultAddress').textContent = addressText;
-                    document.getElementById('shippingAddressSection').style.display = 'block';
-                } else {
-                    document.getElementById('shippingAddressSection').style.display = 'none';
-                }
-            } else {
-                document.getElementById('shippingAddressSection').style.display = 'none';
-            }
+    const res = await fetch(url, {
+      headers: getToken()
+        ? { Authorization: `Bearer ${getToken()}` }
+        : {}
+    });
 
-            // Display status timeline
-            displayStatusTimeline(order);
+    const data = await res.json();
 
-            // Show the result
-            document.getElementById('orderResult').classList.add('active');
-        }
+    if (!res.ok) {
+      return showError(data.message || "Order not found");
+    }
 
-        function displayStatusTimeline(order) {
-            const timelineContainer = document.getElementById('statusTimeline');
-            timelineContainer.innerHTML = '';
+    hideError();
+    renderOrder(data);
+    startLiveTracking(orderId, email);
 
-            const currentStatus = order.status;
-            const statusHistory = order.statusHistory || [];
+  } catch {
+    showError("Server error. Try again.");
+  }
+}
 
-            // Create timeline based on statusHistory if available, otherwise use current status
-            if (statusHistory.length > 0) {
-                // Use the actual status history from the order
-                statusHistory.forEach((item, index) => {
-                    const isLast = index === statusHistory.length - 1;
-                    const timelineItem = document.createElement('div');
-                    timelineItem.className = `timeline-item ${isLast ? 'active' : 'completed'}`;
-                    timelineItem.innerHTML = `
-                        <div class="timeline-content">
-                            <h4>${item.status}</h4>
-                            <p>${item.note || ''}</p>
-                            <div class="timestamp">${formatDate(item.timestamp)}</div>
-                        </div>
-                    `;
-                    timelineContainer.appendChild(timelineItem);
-                });
-            } else {
-                // Fallback to current status with default timeline
-                const currentIndex = STATUS_ORDER.indexOf(currentStatus);
-                
-                STATUS_ORDER.forEach((status, index) => {
-                    let timelineClass = '';
-                    if (index < currentIndex) {
-                        timelineClass = 'completed';
-                    } else if (index === currentIndex) {
-                        timelineClass = 'active';
-                    }
+/* ================= RENDER ORDER ================= */
 
-                    const timelineItem = document.createElement('div');
-                    timelineItem.className = `timeline-item ${timelineClass}`;
-                    timelineItem.innerHTML = `
-                        <div class="timeline-content">
-                            <h4>${status}</h4>
-                            <p>${index === currentIndex ? 'Current status' : (index < currentIndex ? 'Completed' : 'Pending')}</p>
-                        </div>
-                    `;
-                    timelineContainer.appendChild(timelineItem);
-                });
-            }
-        }
+function renderOrder(order) {
+  $("orderResult").classList.add("active");
 
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
+  $("resultOrderId").innerText = order.orderId;
+  $("resultCustomer").innerText = order.customer || "N/A";
+  $("resultDate").innerText = formatDate(order.createdAt);
+  $("resultTotal").innerText = `₹${order.total || 0}`;
 
-        // Allow pressing Enter to track order
-        document.getElementById('orderIdInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                trackOrder();
-            }
-        });
+  /* PRODUCTS */
+  if (order.items?.length) {
+    $("resultProducts").innerText = order.items.map(i => i.name).join(", ");
+    $("resultQuantity").innerText =
+      order.items.reduce((sum, i) => sum + i.quantity, 0);
+  } else {
+    $("resultProducts").innerText = order.product || "N/A";
+    $("resultQuantity").innerText = order.quantity || 0;
+  }
 
-// Initialize
-        window.addEventListener('load', () => {
-            updateUI();
-            
-            // Check for order ID in URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const orderId = urlParams.get('orderId');
-            if (orderId) {
-                document.getElementById('orderIdInput').value = orderId;
-                trackOrder();
-            }
-        });
+  /* ADDRESS */
+  if (order.shippingAddress) {
+    const a = order.shippingAddress;
+    $("resultAddress").innerText =
+      `${a.street || ""}, ${a.city || ""}, ${a.state || ""} - ${a.zipCode || ""}`;
+
+    $("shippingAddressSection").style.display = "block";
+  }
+
+  renderTimeline(order);
+}
+
+/* ================= TIMELINE ================= */
+
+function renderTimeline(order) {
+  const container = $("statusTimeline");
+  container.innerHTML = "";
+
+  const history = order.statusHistory || [];
+  const currentStatus = order.status;
+
+  if (history.length) {
+    history.forEach((s, i) => {
+      const div = document.createElement("div");
+
+      div.className =
+        "timeline-item " +
+        (i === history.length - 1 ? "active" : "completed");
+
+      div.innerHTML = `
+        <div class="timeline-content">
+          <h4>${s.status}</h4>
+          <p>${s.note || ""}</p>
+          <span>${formatDate(s.timestamp)}</span>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+  } else {
+    const currentIndex = STATUS_ORDER.indexOf(currentStatus);
+
+    STATUS_ORDER.forEach((status, i) => {
+      const div = document.createElement("div");
+
+      let cls = "";
+      if (i < currentIndex) cls = "completed";
+      if (i === currentIndex) cls = "active";
+
+      div.className = `timeline-item ${cls}`;
+
+      div.innerHTML = `
+        <div class="timeline-content">
+          <h4>${status}</h4>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+  }
+}
+
+/* ================= LIVE TRACKING ================= */
+
+function startLiveTracking(orderId, email) {
+  if (pollingInterval) clearInterval(pollingInterval);
+
+  pollingInterval = setInterval(() => {
+    silentRefresh(orderId, email);
+  }, 15000);
+}
+
+async function silentRefresh(orderId, email) {
+  try {
+    let url = `${API_BASE}/orders/track/${orderId}`;
+
+    if (!getToken()) {
+      url += `?email=${encodeURIComponent(email)}`;
+    }
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (res.ok) {
+      renderTimeline(data);
+    }
+  } catch {}
+}
+
+/* ================= ENTER KEY ================= */
+
+$("orderIdInput")?.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") trackOrder();
+});
+
+/* ================= INIT ================= */
+
+window.addEventListener("load", () => {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("orderId");
+
+  if (orderId) {
+    $("orderIdInput").value = orderId;
+    trackOrder();
+  }
+});

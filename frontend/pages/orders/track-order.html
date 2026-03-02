@@ -1,148 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description"
-    content="Track Your Order - Shri Manjunatha Shamiyana Works & Events">
+<title>Track Order</title>
 
-  <!-- GLOBAL CSS -->
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="stylesheet" href="/css/ii.css">
-  <link rel="stylesheet" href="/css/pages/track-order.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/ii.css">
+<link rel="stylesheet" href="/css/pages/track-order.css">
 
-  <!-- FONT AWESOME -->
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-
-  <title>Track Order - Shri Manjunatha Shamiyana Works & Events</title>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
 </head>
 
 <body>
 
-<!-- ✅ GLOBAL NAVBAR -->
 <div id="header"></div>
-
-<!-- ================= TRACK ORDER ================= -->
 
 <div class="track-container">
 
-  <div class="track-header">
-    <h1>Track Your Order</h1>
-    <p>Enter your order ID to track the status of your order</p>
-  </div>
+<div class="track-header">
+<h1>Track Your Order</h1>
+<p>Enter your order ID to track the status</p>
+</div>
 
-  <div class="track-form">
+<div class="track-form">
 
-    <h2><i class="fa fa-search"></i> Find Your Order</h2>
+<div class="input-group">
+<input type="email" id="emailInput"
+placeholder="Enter your email">
+</div>
 
-    <div class="input-group">
-      <input type="email" id="emailInput"
-        placeholder="Enter your email address" required>
-    </div>
-
-    <div class="input-group">
-      <input type="text" id="orderIdInput"
-        placeholder="Enter Order ID (e.g., ORD-1234567890)" required>
-
-      <button class="track-btn" onclick="trackOrder()">
-        Track Order
-      </button>
-    </div>
-
-    <p class="track-note">
-      Enter the email used during checkout and your order ID.
-    </p>
-
-  </div>
-
-  <div class="error-message" id="errorMessage">
-    <i class="fa fa-exclamation-circle"></i>
-    <span id="errorText">Order not found.</span>
-  </div>
-
-  <div class="order-result" id="orderResult">
-
-    <div class="order-info">
-
-      <h2><i class="fa fa-box"></i> Order Details</h2>
-
-      <div class="info-grid">
-
-        <div class="info-item">
-          <label>Order ID</label>
-          <span id="resultOrderId">-</span>
-        </div>
-
-        <div class="info-item">
-          <label>Customer Name</label>
-          <span id="resultCustomer">-</span>
-        </div>
-
-        <div class="info-item">
-          <label>Order Date</label>
-          <span id="resultDate">-</span>
-        </div>
-
-        <div class="info-item">
-          <label>Total Amount</label>
-          <span id="resultTotal">₹0</span>
-        </div>
-
-        <div class="info-item">
-          <label>Products</label>
-          <span id="resultProducts">-</span>
-        </div>
-
-        <div class="info-item">
-          <label>Quantity</label>
-          <span id="resultQuantity">0</span>
-        </div>
-
-      </div>
-
-      <div class="shipping-address"
-        id="shippingAddressSection" style="display:none;">
-
-        <h4><i class="fa fa-map-marker"></i> Shipping Address</h4>
-        <p id="resultAddress">-</p>
-
-      </div>
-
-    </div>
-
-    <div class="status-timeline">
-      <h3><i class="fa fa-truck"></i> Order Status</h3>
-      <div class="timeline" id="statusTimeline"></div>
-    </div>
-
-  </div>
+<div class="input-group">
+<input type="text" id="orderIdInput"
+placeholder="Enter Order ID">
+<button class="track-btn" onclick="trackOrder()">
+Track Order
+</button>
+</div>
 
 </div>
 
-<!-- AUTH MODAL (if you still use it here) -->
-
-<div id="auth-modal" class="auth-modal">
-  <div class="auth-form">
-
-    <h2 id="auth-title">Login</h2>
-
-    <form id="auth-form">
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Submit</button>
-      <button type="button" class="back-btn">Back</button>
-    </form>
-
-  </div>
+<!-- LOADER -->
+<div id="loader" class="loader" style="display:none">
+Loading order details...
 </div>
 
-<!-- PAGE JS -->
-<script src="/js/track-order.js"></script>
+<!-- ERROR -->
+<div class="error-message" id="errorMessage"></div>
 
-<!-- LOAD GLOBAL HEADER -->
+<!-- RESULT -->
+<div class="order-result" id="orderResult">
+
+<div class="order-info">
+
+<h2>Order Details</h2>
+
+<div class="info-grid">
+
+<div><label>Order ID</label><span id="resultOrderId"></span></div>
+<div><label>Name</label><span id="resultCustomer"></span></div>
+<div><label>Date</label><span id="resultDate"></span></div>
+<div><label>Total</label><span id="resultTotal"></span></div>
+<div><label>Products</label><span id="resultProducts"></span></div>
+<div><label>Qty</label><span id="resultQuantity"></span></div>
+
+</div>
+
+<div id="shippingAddressSection" style="display:none">
+<h4>Shipping Address</h4>
+<p id="resultAddress"></p>
+</div>
+
+</div>
+
+<div class="status-timeline">
+<h3>Order Status</h3>
+<div class="timeline" id="statusTimeline"></div>
+</div>
+
+</div>
+
+</div>
+
 <script src="/js/loadHeader.js"></script>
+
+<script>
+const API_BASE = "http://localhost:5000/api";
+
+const loader = document.getElementById("loader");
+const errorBox = document.getElementById("errorMessage");
+const resultBox = document.getElementById("orderResult");
+
+function showLoader(){
+loader.style.display="block";
+resultBox.style.display="none";
+errorBox.style.display="none";
+}
+
+function showError(msg){
+loader.style.display="none";
+errorBox.style.display="block";
+errorBox.innerText=msg;
+}
+
+function showResult(){
+loader.style.display="none";
+resultBox.style.display="block";
+}
+
+async function trackOrder(){
+
+const email = document.getElementById("emailInput").value.trim();
+const orderId = document.getElementById("orderIdInput").value.trim();
+
+if(!orderId){
+return showError("Enter Order ID");
+}
+
+showLoader();
+
+try{
+
+const res = await fetch(`${API_BASE}/orders/track`,{
+method:"POST",
+headers:{ "Content-Type":"application/json"},
+body:JSON.stringify({orderId,email})
+});
+
+const data = await res.json();
+
+if(!data.success){
+return showError("Order not found");
+}
+
+renderOrder(data.order);
+showResult();
+
+}catch{
+showError("Server error");
+}
+
+}
+
+function renderOrder(order){
+
+document.getElementById("resultOrderId").innerText = order.orderId;
+document.getElementById("resultCustomer").innerText = order.customer;
+document.getElementById("resultDate").innerText =
+new Date(order.createdAt).toLocaleDateString("en-IN");
+
+document.getElementById("resultTotal").innerText = "₹"+order.total;
+
+document.getElementById("resultProducts").innerText =
+order.items.map(i=>i.name).join(", ");
+
+document.getElementById("resultQuantity").innerText =
+order.items.reduce((s,i)=>s+i.quantity,0);
+
+/* ADDRESS */
+if(order.shippingAddress){
+document.getElementById("shippingAddressSection").style.display="block";
+
+document.getElementById("resultAddress").innerText =
+`${order.shippingAddress.street},
+${order.shippingAddress.city},
+${order.shippingAddress.state}
+- ${order.shippingAddress.zipCode}`;
+}
+
+/* TIMELINE */
+renderTimeline(order.orderStatus);
+
+}
+
+/* TIMELINE */
+function renderTimeline(status){
+
+const steps = [
+"placed",
+"confirmed",
+"shipped",
+"out_for_delivery",
+"delivered"
+];
+
+const timeline = document.getElementById("statusTimeline");
+timeline.innerHTML="";
+
+steps.forEach(step=>{
+
+const div = document.createElement("div");
+
+div.className = "timeline-step";
+
+if(steps.indexOf(step) <= steps.indexOf(status)){
+div.classList.add("active");
+}
+
+div.innerHTML = `<p>${step.replaceAll("_"," ")}</p>`;
+
+timeline.appendChild(div);
+
+});
+
+}
+
+/* AUTO TRACK FROM SUCCESS PAGE */
+window.addEventListener("load",()=>{
+const params = new URLSearchParams(window.location.search);
+const orderId = params.get("orderId");
+
+if(orderId){
+document.getElementById("orderIdInput").value = orderId;
+trackOrder();
+}
+});
+</script>
 
 </body>
 </html>

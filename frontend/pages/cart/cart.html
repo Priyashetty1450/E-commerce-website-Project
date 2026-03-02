@@ -13,6 +13,12 @@
   <!-- FONT AWESOME -->
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+
+  <!-- 🔐 AUTH (load in head so protection runs before page render) -->
+  <script src="/js/auth.js"></script>
+  <script>
+    requireLogin();
+  </script>
 </head>
 
 <body>
@@ -26,10 +32,20 @@
 
   <h1>Shopping Cart</h1>
 
+  <!-- 🛒 EMPTY CART -->
+  <div id="empty-cart" class="empty-cart" style="display:none;">
+    <i class="fa fa-shopping-cart"></i>
+    <p>Your cart is empty</p>
+    <a href="/pages/shop/shop.html" class="shop-btn">Go to Shop</a>
+  </div>
+
+  <!-- 🧾 CART ITEMS -->
   <div id="cart-items"></div>
 
+  <!-- 💰 SUMMARY -->
   <div id="cart-summary" class="cart-summary" style="display:none;">
     <h3>Order Summary</h3>
+
     <p>Total Items: <span id="total-items">0</span></p>
     <p>Total Amount: ₹<span id="total-amount">0</span></p>
 
@@ -43,7 +59,7 @@
 <!-- ✅ LOAD GLOBAL HEADER -->
 <script src="/js/loadHeader.js"></script>
 
-<!-- PAGE JS -->
+<!-- 🛒 CART LOGIC -->
 <script src="/js/cart.js"></script>
 
 </body>

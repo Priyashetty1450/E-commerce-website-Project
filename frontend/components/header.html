@@ -1,21 +1,26 @@
 <header>
   <div class="header-container">
 
+    <!-- LOGO -->
     <div class="logo">
       <a href="/pages/home/Landing.html">
         <img src="/assets/images/logo.jpg" alt="Logo">
       </a>
     </div>
 
+    <!-- SEARCH -->
     <div class="search-bar">
       <input type="text" placeholder="Search...">
       <button><i class="fa fa-search"></i></button>
     </div>
 
+    <!-- MOBILE MENU -->
     <div class="mobile-menu-btn">☰</div>
 
+    <!-- NAVIGATION -->
     <nav>
       <ul>
+
         <li><a href="/pages/home/Landing.html">Home</a></li>
         <li><a href="/pages/shop/shop.html">Shop</a></li>
         <li><a href="/pages/info/Service.html">Service</a></li>
@@ -23,23 +28,29 @@
         <li><a href="/pages/contact/Contact-us.html">Contact</a></li>
         <li><a href="/pages/orders/track-order.html">Track Order</a></li>
 
+        <!-- LOGIN -->
         <li id="login-btn">
-          <a href="#" onclick="showAuthModal('login')">Login</a>
+          <a href="/pages/auth/login.html">Login</a>
         </li>
 
+        <!-- SIGNUP -->
         <li id="signup-btn">
-          <a href="#" onclick="showAuthModal('signup')">Signup</a>
+          <a href="/pages/auth/signup.html">Signup</a>
         </li>
 
+        <!-- LOGOUT -->
         <li id="logout-btn" style="display:none;">
-          <a href="#" onclick="logout()">Logout</a>
+          <a href="#" id="logout-link">Logout</a>
         </li>
+
       </ul>
     </nav>
 
+    <!-- CART -->
     <div class="cart-icon">
-      <a href="/pages/cart/cart.html">
+      <a href="/pages/cart/cart.html" class="cart-link">
         <i class="fa fa-shopping-cart"></i>
+        <span id="cart-count" class="cart-badge">0</span>
       </a>
     </div>
 

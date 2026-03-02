@@ -924,3 +924,20 @@ footer {
 .main-header nav .active {
   color: #8b4513;
 }
+
+/* ================= CART BADGE ================= */
+
+.cart-link {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: #8b4513;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+}

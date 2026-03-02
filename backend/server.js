@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const path = require("path");
 
-dotenv.config({ path: path.join(__dirname, "LS.env") });
+dotenv.config();
 
 const express = require("express");
 const mongoose = require("mongoose");

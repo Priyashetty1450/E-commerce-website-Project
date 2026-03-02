@@ -7,6 +7,8 @@
   <meta name="description"
     content="Shri Manjunatha Shamiyana Works & Events – trusted suppliers & manufacturers of tents, shamiyanas, and decoration items.">
 
+  <title>Shri Manjunatha - Shamiyana Works & Events</title>
+
   <!-- GLOBAL CSS -->
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/ii.css">
@@ -15,7 +17,8 @@
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
 
-  <title>Shri Manjunatha - Shamiyana Works & Events</title>
+  <!-- 🔐 AUTH (needed for navbar state + logout) -->
+  <script src="/js/auth.js"></script>
 </head>
 
 <body>
@@ -24,7 +27,6 @@
 <div id="header"></div>
 
 <!-- ================= HERO ================= -->
-
 <section class="hero">
   <div class="hero-content">
     <h1>Elevate Your Space with Amazing Decor</h1>
@@ -35,7 +37,6 @@
 </section>
 
 <!-- ================= CATEGORIES ================= -->
-
 <section class="categories">
   <h2 class="section-title">Our Collections</h2>
 
@@ -65,14 +66,12 @@
 </section>
 
 <!-- ================= FEATURED ================= -->
-
 <section class="featured">
   <h2 class="section-title">Featured Products</h2>
   <div id="product-grid" class="product-grid"></div>
 </section>
 
 <!-- ================= FOOTER ================= -->
-
 <footer>
 
   <div class="footer-container">
@@ -101,7 +100,7 @@
 
 </footer>
 
-<!-- ✅ LOAD GLOBAL HEADER -->
+<!-- ✅ LOAD HEADER (this updates login/logout automatically) -->
 <script src="/js/loadHeader.js"></script>
 
 </body>
