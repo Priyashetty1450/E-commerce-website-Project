@@ -1,6 +1,23 @@
+/* ================= GOOGLE TOKEN HANDLER ================= */
+(function handleGoogleToken() {
+
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  if (token) {
+    localStorage.setItem("token", token);
+
+    // Remove token from URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+})();
+
+
 document.addEventListener("DOMContentLoaded", () => {
   loadHeader();
 });
+
 
 /* ================= LOAD HEADER ================= */
 function loadHeader() {
@@ -11,10 +28,12 @@ function loadHeader() {
 
       updateNavbar();
       attachLogout();
-      updateCartBadge();   // ⭐ NEW
+      updateCartBadge();
+      attachSearch();
     })
     .catch(err => console.log("Header load error:", err));
 }
+
 
 /* ================= NAVBAR STATE ================= */
 function updateNavbar() {
@@ -37,6 +56,7 @@ function updateNavbar() {
   }
 }
 
+
 /* ================= LOGOUT ================= */
 function attachLogout() {
   const logoutLink = document.querySelector("#logout-link");
@@ -50,13 +70,40 @@ function attachLogout() {
     localStorage.removeItem("role");
 
     updateNavbar();
-    updateCartBadge(); // reset badge
+    updateCartBadge();
 
     window.location.href = "/pages/home/Landing.html";
   });
 }
 
-/* ================= CART BADGE (DB BASED) ================= */
+
+/* ================= SEARCH ================= */
+function attachSearch() {
+
+  const searchBtn = document.getElementById("searchBtn");
+  const searchInput = document.getElementById("searchInput");
+
+  if (!searchBtn || !searchInput) return;
+
+  function performSearch() {
+    const query = searchInput.value.trim();
+    if (!query) return;
+
+    window.location.href =
+      `/pages/shop/shop.html?search=${encodeURIComponent(query)}`;
+  }
+
+  searchBtn.addEventListener("click", performSearch);
+
+  searchInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      performSearch();
+    }
+  });
+}
+
+
+/* ================= CART BADGE ================= */
 async function updateCartBadge() {
 
   const badge = document.getElementById("cart-count");
@@ -64,7 +111,6 @@ async function updateCartBadge() {
 
   if (!badge) return;
 
-  // not logged in → 0
   if (!token) {
     badge.innerText = 0;
     return;

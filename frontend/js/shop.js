@@ -5,6 +5,8 @@ const API_BASE = "http://localhost:5000/api";
 let inventory = [];
 let activeItem = null;
 let currentFilter = "all";
+let searchQuery = null;   // ⭐ ADDED FOR SEARCH
+
 
 /* ================= AUTH ================= */
 
@@ -24,6 +26,7 @@ function requireLogin() {
   }
   return true;
 }
+
 
 /* ================= TOAST ================= */
 
@@ -47,12 +50,14 @@ function showToast(message, type = "success") {
   setTimeout(() => toast.remove(), 3000);
 }
 
+
 /* ================= LOADER ================= */
 
 function showLoader() {
   document.getElementById("products-container").innerHTML =
     "<p class='loader'>Loading products...</p>";
 }
+
 
 /* ================= API ================= */
 
@@ -75,6 +80,7 @@ async function apiRequest(url, options = {}) {
   }
 }
 
+
 /* ================= LOAD PRODUCTS ================= */
 
 async function loadProducts() {
@@ -94,8 +100,13 @@ async function loadProducts() {
     stock: p.stock ?? 0
   }));
 
+  // ⭐ READ SEARCH QUERY FROM URL
+  const params = new URLSearchParams(window.location.search);
+  searchQuery = params.get("search");
+
   renderProducts();
 }
+
 
 /* ================= RENDER PRODUCTS ================= */
 
@@ -105,8 +116,20 @@ function renderProducts() {
 
   let filtered = inventory;
 
+  // Category Filter
   if (currentFilter !== "all") {
-    filtered = inventory.filter(p => p.category === currentFilter);
+    filtered = filtered.filter(p => p.category === currentFilter);
+  }
+
+  // ⭐ SEARCH FILTER
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+
+    filtered = filtered.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.category.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q)
+    );
   }
 
   if (!filtered.length) {
@@ -140,6 +163,7 @@ function renderProducts() {
   `).join("");
 }
 
+
 /* ================= FILTER ================= */
 
 function filterItems(category, event) {
@@ -154,6 +178,7 @@ function filterItems(category, event) {
 
   renderProducts();
 }
+
 
 /* ================= OPEN MODAL ================= */
 
@@ -175,11 +200,13 @@ function openDetails(id) {
   document.getElementById("pModal").style.display = "flex";
 }
 
+
 /* ================= CLOSE MODAL ================= */
 
 function closeModal(id) {
   document.getElementById(id).style.display = "none";
 }
+
 
 /* ================= ADD TO CART ================= */
 
@@ -221,48 +248,13 @@ async function addToCart() {
   if (!res) return;
 
   showToast("Item added to cart");
-
   updateCartBadge();
-
   closeModal("pModal");
 }
 
-/* ================= CART BADGE ================= */
-
-async function updateCartBadge() {
-
-  const badge = document.getElementById("cart-count");
-
-  if (!badge || !getToken()) return;
-
-  const data = await apiRequest(`${API_BASE}/cart`, {
-    headers: { Authorization: `Bearer ${getToken()}` }
-  });
-
-  if (!data || !data.items) return;
-
-  const count = data.items.reduce((sum, i) => sum + i.quantity, 0);
-
-  badge.innerText = count;
-}
-
-/* ================= AUTO REFRESH BADGE ================= */
-
-setInterval(() => {
-  if (getToken()) updateCartBadge();
-}, 25000);
-
-/* ================= MODAL OUTSIDE CLICK ================= */
-
-window.addEventListener("click", e => {
-  if (e.target.classList.contains("overlay")) {
-    e.target.style.display = "none";
-  }
-});
 
 /* ================= INIT ================= */
 
 window.addEventListener("DOMContentLoaded", () => {
   loadProducts();
-  updateCartBadge();
 });

@@ -29,9 +29,6 @@ function checkAuth() {
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
-
-  updateNavbar(); // 🔥 instantly update UI
-
   window.location.href = "/pages/auth/login.html";
 }
 
@@ -110,37 +107,37 @@ async function login() {
 }
 
 /* ================= GOOGLE LOGIN ================= */
-async function googleLogin() {
-  const res = await fetch(`${API_URL}/google`);
-  const data = await res.json();
-
-  if (data.demoMode) {
-    const email = prompt("Enter Google Email:");
-    const name = prompt("Enter Name:");
-
-    const demoRes = await fetch(`${API_URL}/google/demo`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, name })
-    });
-
-    const demoData = await demoRes.json();
-
-    if (demoData.token) {
-      localStorage.setItem("token", demoData.token);
-      localStorage.setItem("role", demoData.role);
-      window.location.href = "../../pages/home/Landing.html";
-    }
-  } else {
-    window.location.href = data.authUrl;
-  }
+function googleLogin() {
+  window.location.href = `${API_URL}/google`;
 }
 
-/* ================= FORGOT PASSWORD ================= */
-async function forgotPassword() {
+/* ================= RESET PAGE LOGIC ================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  const emailForm = document.getElementById("emailForm");
+  const passwordForm = document.getElementById("passwordForm");
+  const pageTitle = document.getElementById("pageTitle");
+
+  if (token && passwordForm && emailForm) {
+    pageTitle.innerText = "Set New Password";
+    emailForm.style.display = "none";
+    passwordForm.style.display = "block";
+  }
+
+});
+
+/* ================= SEND RESET LINK ================= */
+async function sendResetLink(event) {
+  event.preventDefault();
+
   const email = document.getElementById("email").value.trim();
 
-  if (!email) return showMessage("Enter your email");
+  if (!email) {
+    return showMessage("Enter your email");
+  }
 
   try {
     const res = await fetch(`${API_URL}/forgot-password`, {
@@ -151,14 +148,15 @@ async function forgotPassword() {
 
     const data = await res.json();
     showMessage(data.message, "success");
+
   } catch {
     showMessage("Server error");
   }
 }
 
 /* ================= RESET PASSWORD ================= */
-async function resetPassword(e) {
-  e.preventDefault();
+async function resetPassword(event) {
+  event.preventDefault();
 
   const token = new URLSearchParams(window.location.search).get("token");
 
@@ -191,32 +189,13 @@ async function resetPassword(e) {
     } else {
       showMessage(data.message);
     }
+
   } catch {
     showMessage("Server error");
   }
 }
 
-/* ================= NAVBAR STATE ================= */
-function updateNavbar() {
-  const token = localStorage.getItem("token");
-
-  const loginBtn = document.getElementById("login-btn");
-  const signupBtn = document.getElementById("signup-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-
-  if (!loginBtn || !signupBtn || !logoutBtn) return;
-
-  if (token) {
-    loginBtn.style.display = "none";
-    signupBtn.style.display = "none";
-    logoutBtn.style.display = "block";
-  } else {
-    loginBtn.style.display = "block";
-    signupBtn.style.display = "block";
-    logoutBtn.style.display = "none";
-  }
-}
-
+/* ================= REQUIRE LOGIN ================= */
 function requireLogin() {
   const token = localStorage.getItem("token");
 
@@ -226,6 +205,7 @@ function requireLogin() {
   }
 }
 
+/* ================= REQUIRE ADMIN ================= */
 function requireAdmin() {
   const role = localStorage.getItem("role");
 
@@ -235,6 +215,7 @@ function requireAdmin() {
   }
 }
 
+/* ================= REQUIRE GUEST ================= */
 function requireGuest() {
   const token = localStorage.getItem("token");
 

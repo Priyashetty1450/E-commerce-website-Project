@@ -1,16 +1,28 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true
+  },
 
   password: {
     type: String,
     required: function () {
-      return !this.isGoogleAuth;   // password not required for Google users
+      return !this.isGoogleAuth;
     }
   },
-
-  email: { type: String, unique: true, sparse: true },
 
   role: {
     type: String,
@@ -18,13 +30,28 @@ const userSchema = new mongoose.Schema({
     default: 'user'
   },
 
-  // 🔐 Google OAuth
-  googleId: { type: String, unique: true, sparse: true },
-  isGoogleAuth: { type: Boolean, default: false },
+  /* ================= GOOGLE AUTH ================= */
 
-  // 🔁 Password reset
-  resetToken: String,
-  resetTokenExpiry: Date
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+
+  isGoogleAuth: {
+    type: Boolean,
+    default: false
+  },
+
+  /* ================= PASSWORD RESET ================= */
+
+  resetToken: {
+    type: String
+  },
+
+  resetTokenExpiry: {
+    type: Date
+  }
 
 }, { timestamps: true });
 
