@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -28,13 +29,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
 <div class="track-form">
 
 <div class="input-group">
-<input type="email" id="emailInput"
-placeholder="Enter your email">
+<input type="email" id="emailInput" placeholder="Enter your email">
 </div>
 
 <div class="input-group">
-<input type="text" id="orderIdInput"
-placeholder="Enter Order ID">
+<input type="text" id="orderIdInput" placeholder="Enter Order ID">
+
 <button class="track-btn" onclick="trackOrder()">
 Track Order
 </button>
@@ -43,15 +43,18 @@ Track Order
 </div>
 
 <!-- LOADER -->
+
 <div id="loader" class="loader" style="display:none">
 Loading order details...
 </div>
 
 <!-- ERROR -->
-<div class="error-message" id="errorMessage"></div>
+
+<div class="error-message" id="errorMessage" style="display:none"></div>
 
 <!-- RESULT -->
-<div class="order-result" id="orderResult">
+
+<div class="order-result" id="orderResult" style="display:none">
 
 <div class="order-info">
 
@@ -76,8 +79,11 @@ Loading order details...
 </div>
 
 <div class="status-timeline">
+
 <h3>Order Status</h3>
+
 <div class="timeline" id="statusTimeline"></div>
+
 </div>
 
 </div>
@@ -87,11 +93,14 @@ Loading order details...
 <script src="/js/loadHeader.js"></script>
 
 <script>
-const API_BASE = "http://localhost:5000/api";
+
+const API_BASE = "/api";
 
 const loader = document.getElementById("loader");
 const errorBox = document.getElementById("errorMessage");
 const resultBox = document.getElementById("orderResult");
+
+/* ================= UI STATES ================= */
 
 function showLoader(){
 loader.style.display="block";
@@ -110,6 +119,8 @@ loader.style.display="none";
 resultBox.style.display="block";
 }
 
+/* ================= TRACK ORDER ================= */
+
 async function trackOrder(){
 
 const email = document.getElementById("emailInput").value.trim();
@@ -123,44 +134,50 @@ showLoader();
 
 try{
 
-const res = await fetch(`${API_BASE}/orders/track`,{
-method:"POST",
-headers:{ "Content-Type":"application/json"},
-body:JSON.stringify({orderId,email})
-});
+const res = await fetch(`${API_BASE}/orders/track/${orderId}`);
 
-const data = await res.json();
-
-if(!data.success){
+if(!res.ok){
 return showError("Order not found");
 }
 
-renderOrder(data.order);
+const order = await res.json();
+
+renderOrder(order);
+
 showResult();
 
-}catch{
+}catch(err){
+
+console.error(err);
 showError("Server error");
+
 }
 
 }
+
+/* ================= RENDER ORDER ================= */
 
 function renderOrder(order){
 
 document.getElementById("resultOrderId").innerText = order.orderId;
+
 document.getElementById("resultCustomer").innerText = order.customer;
+
 document.getElementById("resultDate").innerText =
 new Date(order.createdAt).toLocaleDateString("en-IN");
 
-document.getElementById("resultTotal").innerText = "₹"+order.total;
+document.getElementById("resultTotal").innerText = "₹" + order.total;
 
 document.getElementById("resultProducts").innerText =
 order.items.map(i=>i.name).join(", ");
 
 document.getElementById("resultQuantity").innerText =
-order.items.reduce((s,i)=>s+i.quantity,0);
+order.items.reduce((sum,i)=>sum+i.quantity,0);
 
 /* ADDRESS */
+
 if(order.shippingAddress){
+
 document.getElementById("shippingAddressSection").style.display="block";
 
 document.getElementById("resultAddress").innerText =
@@ -168,38 +185,51 @@ document.getElementById("resultAddress").innerText =
 ${order.shippingAddress.city},
 ${order.shippingAddress.state}
 - ${order.shippingAddress.zipCode}`;
-}
-
-/* TIMELINE */
-renderTimeline(order.orderStatus);
 
 }
 
 /* TIMELINE */
+
+renderTimeline(order.status);
+
+}
+
+/* ================= TIMELINE ================= */
+
 function renderTimeline(status){
 
 const steps = [
-"placed",
-"confirmed",
-"shipped",
-"out_for_delivery",
-"delivered"
+"Order Placed",
+"Order Packed",
+"Order Shipped",
+"Out for Delivery",
+"Delivered"
 ];
 
 const timeline = document.getElementById("statusTimeline");
+
 timeline.innerHTML="";
+
+const index = steps.indexOf(status);
+
+/* progress class for colored line */
+
+timeline.className =
+"timeline progress-" + (index >= 0 ? index + 1 : 1);
+
+/* create steps */
 
 steps.forEach(step=>{
 
 const div = document.createElement("div");
 
-div.className = "timeline-step";
+div.className="timeline-step";
 
-if(steps.indexOf(step) <= steps.indexOf(status)){
+if(steps.indexOf(step) <= index){
 div.classList.add("active");
 }
 
-div.innerHTML = `<p>${step.replaceAll("_"," ")}</p>`;
+div.innerHTML = `<p>${step}</p>`;
 
 timeline.appendChild(div);
 
@@ -207,17 +237,29 @@ timeline.appendChild(div);
 
 }
 
-/* AUTO TRACK FROM SUCCESS PAGE */
+/* ================= AUTO LOAD FROM SUCCESS PAGE ================= */
+
 window.addEventListener("load",()=>{
+
 const params = new URLSearchParams(window.location.search);
+
 const orderId = params.get("orderId");
 
 if(orderId){
+
 document.getElementById("orderIdInput").value = orderId;
+
 trackOrder();
+
 }
+
 });
+
 </script>
+
+<div id="footer"></div>
+
+<script src="/js/loadFooter.js"></script>
 
 </body>
 </html>

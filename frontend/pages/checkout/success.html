@@ -6,10 +6,10 @@
 
 <title>Order Success</title>
 
-<link rel="stylesheet" href="/css/ii.css">
+<link rel="stylesheet" href="../../css/ii.css">
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 body{
@@ -95,8 +95,8 @@ padding:40px;
 <p><strong>Date:</strong> <span id="date"></span></p>
 </div>
 
-<a href="/pages/home/Landing.html" class="btn">Continue Shopping</a>
-<a href="/pages/orders/track-order.html" class="btn btn-secondary">Track Order</a>
+<a href="../home/Landing.html" class="btn">Continue Shopping</a>
+<a href="../orders/track-order.html" class="btn btn-secondary">Track Order</a>
 
 </div>
 
@@ -115,7 +115,7 @@ async function loadOrder() {
 
   if (!orderId) {
     alert("Invalid order access");
-    window.location.href = "/pages/home/Landing.html";
+    window.location.href = "../home/Landing.html";
     return;
   }
 
@@ -161,7 +161,7 @@ async function loadOrder() {
 
     alert("Failed to load order");
 
-    window.location.href = "/pages/home/Landing.html";
+    window.location.href = "../home/Landing.html";
   }
 }
 
@@ -170,6 +170,12 @@ async function loadOrder() {
 loadOrder();
 
 </script>
+
+<!-- FOOTER -->
+<div id="footer"></div>
+
+<!-- LOAD FOOTER -->
+<script src="../../js/loadFooter.js"></script>
 
 </body>
 </html>

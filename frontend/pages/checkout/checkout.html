@@ -6,27 +6,28 @@
 
   <title>Checkout</title>
 
-  <!-- 🔐 AUTH PROTECTION -->
-  <script src="/js/auth.js"></script>
+  <!-- AUTH PROTECTION -->
+  <script src="../../js/auth.js"></script>
   <script>
     requireLogin();
   </script>
 
   <!-- GLOBAL CSS -->
-  <link rel="stylesheet" href="/css/ii.css">
-  <link rel="stylesheet" href="/css/checkout.css">
+  <link rel="stylesheet" href="../../css/ii.css">
+  <link rel="stylesheet" href="../../css/checkout.css">
 
   <!-- FONT AWESOME -->
   <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- RAZORPAY -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 </head>
 
 <body>
 
-<!-- ✅ GLOBAL HEADER -->
+<!-- GLOBAL HEADER -->
 <div id="header"></div>
 
 <!-- ================= CHECKOUT ================= -->
@@ -37,7 +38,7 @@
 
   <div class="checkout-grid">
 
-    <!-- ================= SHIPPING ================= -->
+    <!-- SHIPPING -->
     <div class="checkout-form">
 
       <h3>Shipping Details</h3>
@@ -54,7 +55,7 @@
         Continue to Payment
       </button>
 
-      <!-- ================= PAYMENT ================= -->
+      <!-- PAYMENT -->
       <div id="paymentSection" style="display:none">
 
         <h3>Select Payment Method</h3>
@@ -79,7 +80,7 @@
 
     </div>
 
-    <!-- ================= ORDER SUMMARY ================= -->
+    <!-- ORDER SUMMARY -->
     <div class="order-summary">
 
       <h3>Order Summary</h3>
@@ -93,7 +94,6 @@
 
       <p>Shipping: <span id="summaryShipping">₹0</span></p>
 
-      <!-- ✅ GST ROW -->
       <p>GST (18%): ₹<span id="summaryTax">0</span></p>
 
       <hr>
@@ -111,11 +111,17 @@
   <div class="spinner"></div>
 </div>
 
-<!-- ✅ LOAD GLOBAL HEADER -->
-<script src="/js/loadHeader.js"></script>
+<!-- LOAD GLOBAL HEADER -->
+<script src="../../js/loadHeader.js"></script>
 
-<!-- ✅ CHECKOUT LOGIC -->
-<script src="/js/checkout.js"></script>
+<!-- CHECKOUT LOGIC -->
+<script src="../../js/checkout.js"></script>
+
+<!-- FOOTER -->
+<div id="footer"></div>
+
+<!-- LOAD FOOTER -->
+<script src="../../js/loadFooter.js"></script>
 
 </body>
 </html>

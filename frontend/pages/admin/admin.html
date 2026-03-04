@@ -1,129 +1,133 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Admin Dashboard</title>
+<title>Admin Dashboard</title>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="../../css/ii.css" />
-  <link rel="stylesheet" href="../../css/admin.css" />
+<!-- GLOBAL CSS -->
 
-  <!-- FONT AWESOME -->
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+<link rel="stylesheet" href="../../css/ii.css">
+<link rel="stylesheet" href="../../css/admin.css">
+
+<!-- FONT AWESOME -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
 </head>
 
 <body>
 
-<header>
-  <div class="header-container">
+<!-- GLOBAL HEADER -->
 
-    <div class="logo">
-      <img src="../../assets/images/logo.jpg" alt="Logo">
-    </div>
-
-    <nav>
-      <ul>
-        <!-- BACK TO MAIN SITE -->
-        <li><a href="../home/Landing.html">Back to Site</a></li>
-
-        <li><a href="#add-product">Add Product</a></li>
-        <li><a href="#products">Products</a></li>
-        <li><a href="#orders">Orders</a></li>
-      </ul>
-    </nav>
-
-  </div>
-</header>
+<div id="header"></div>
 
 <main class="dashboard-container">
 
-  <h1>Admin Dashboard</h1>
+<h1>Admin Dashboard</h1>
 
-  <!-- SUMMARY -->
-  <div class="summary">
+<!-- SUMMARY -->
 
-    <div class="summary-item">
-      <h3 id="total-products">0</h3>
-      <p>Total Products</p>
-    </div>
+<div class="summary">
 
-    <div class="summary-item">
-      <h3 id="total-orders">0</h3>
-      <p>Total Orders</p>
-    </div>
+<div class="summary-item">
+<h3 id="total-products">0</h3>
+<p>Total Products</p>
+</div>
 
-  </div>
+<div class="summary-item">
+<h3 id="total-orders">0</h3>
+<p>Total Orders</p>
+</div>
 
-  <!-- ADD PRODUCT -->
-  <section id="add-product" class="dashboard-section">
+</div>
 
-    <h2>Add New Product</h2>
+<!-- ADD PRODUCT -->
 
-    <form id="product-form">
+<section id="add-product" class="dashboard-section">
 
-      <input type="text" id="product-name" placeholder="Product Name" required>
+<h2>Add New Product</h2>
 
-      <input type="file" id="product-image" accept=".jpg,.jpeg" required>
+<form id="product-form">
 
-      <input type="number" id="product-price" placeholder="Price" required>
+<input type="text" id="product-name" placeholder="Product Name" required>
 
-      <input type="number" id="product-stock" placeholder="Stock" required>
+<input type="file" id="product-image" accept=".jpg,.jpeg" required>
 
-      <select id="product-category" required>
-        <option value="">Select Category</option>
-        <option value="mural">Wall Murals</option>
-        <option value="stage">Stage Decor</option>
-        <option value="furniture">Furniture</option>
-      </select>
+<input type="number" id="product-price" placeholder="Price" required>
 
-      <textarea id="product-description" placeholder="Description"></textarea>
+<input type="number" id="product-stock" placeholder="Stock" required>
 
-      <button type="submit" class="btn">Add Product</button>
+<select id="product-category" required>
+<option value="">Select Category</option>
+<option value="mural">Wall Murals</option>
+<option value="stage">Stage Decor</option>
+<option value="furniture">Furniture</option>
+</select>
 
-    </form>
+<textarea id="product-description" placeholder="Description"></textarea>
 
-  </section>
+<button type="submit" class="btn">Add Product</button>
 
-  <!-- PRODUCT LIST -->
-  <section id="products" class="dashboard-section">
+</form>
 
-    <h2>Product List</h2>
+</section>
 
-    <div id="product-list" class="product-list"></div>
+<!-- PRODUCT LIST -->
 
-  </section>
+<section id="products" class="dashboard-section">
 
-  <!-- ORDERS -->
-  <section id="orders" class="dashboard-section">
+<h2>Product List</h2>
 
-    <h2>Order Tracking</h2>
+<div id="product-list" class="product-list"></div>
 
-    <table id="order-table">
+</section>
 
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Product</th>
-          <th>Qty</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+<!-- ORDERS -->
 
-      <tbody></tbody>
+<section id="orders" class="dashboard-section">
 
-    </table>
+<h2>Order Tracking</h2>
 
-  </section>
+<table id="order-table">
+
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Customer</th>
+<th>Product</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</section>
 
 </main>
 
-<!-- JS -->
+<!-- FOOTER -->
+
+<div id="footer"></div>
+
+<!-- LOAD HEADER -->
+
+<script src="../../js/loadHeader.js"></script>
+
+<!-- LOAD FOOTER -->
+
+<script src="../../js/loadFooter.js"></script>
+
+<!-- ADMIN JS -->
+
 <script src="../../js/admin.js"></script>
 
 </body>

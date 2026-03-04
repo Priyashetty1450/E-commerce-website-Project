@@ -1,78 +1,74 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Contact Us | Shri Manjunatha</title>
 
 <!-- GLOBAL CSS -->
-<link rel="stylesheet" href="/css/contact.css">
-<link rel="stylesheet" href="/css/ii.css">
+<link rel="stylesheet" href="../../css/main.css">
+<link rel="stylesheet" href="../../css/ii.css">
+<link rel="stylesheet" href="../../css/contact.css">
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
 
 <body>
 
-<!-- ✅ GLOBAL NAVBAR -->
+<!-- GLOBAL HEADER -->
+
 <div id="header"></div>
 
-<!-- ================= BREADCRUMB ================= -->
+<!-- CONTACT SECTION -->
 
-<div class="breadcrumb">
-  <a href="/pages/home/Landing.html">Home</a> &gt; Contact Us
-</div>
-
-<!-- ================= CONTACT FORM ================= -->
-
-<section class="container">
+<div style="max-width:600px; margin:60px auto; padding:20px;">
 
 <h1>Contact Us</h1>
 
-<p class="contact-info">
-You can reach us at
-<strong>wedding@sanskaridecor.com</strong>
-or <strong>987654XXXX</strong>
+<p>
+You can reach us at <b>wedding@sanskaridecor.com</b><br>
+Phone: <b>987654XXXX</b>
 </p>
-
-<h3>Enter Your Details</h3>
 
 <form class="contact-form">
 
-<input name="firstName" placeholder="First Name" required>
-<input name="lastName" placeholder="Last Name" required>
+<label>First Name</label> <input type="text" name="firstName" required>
 
-<input name="email" type="email"
-placeholder="Email ID (eg: abc@xyz.com)" required>
+<label>Last Name</label> <input type="text" name="lastName" required>
 
-<input name="subject" placeholder="Subject" required>
+<label>Email</label> <input type="email" name="email" required>
 
-<label>Contact No:</label>
-<input name="phone" type="tel" placeholder="Enter contact number" required>
+<label>Subject</label> <input type="text" name="subject" required>
 
-<textarea name="message" rows="5"
-placeholder="Message" required></textarea>
+<label>Phone</label> <input type="tel" name="phone" required>
 
-<small>Describe your query in detail..</small>
+<label>Message</label>
 
-<div class="recaptcha">
-<input type="checkbox" required> I'm not a robot
-</div>
+<textarea name="message" rows="5" required></textarea>
+
+<br><br>
 
 <button type="submit">Submit</button>
 
 </form>
 
-</section>
+</div>
 
-<!-- ✅ LOAD GLOBAL HEADER -->
-<script src="/js/loadHeader.js"></script>
+<!-- LOAD HEADER -->
+
+<script src="../../js/loadHeader.js"></script>
 
 <script>
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = "http://localhost:5000/api";
 
-document.querySelector('.contact-form')
-.addEventListener('submit', async (e) => {
+document.querySelector(".contact-form")
+.addEventListener("submit", async (e) => {
 
 e.preventDefault();
 
@@ -82,26 +78,32 @@ const data = Object.fromEntries(formData.entries());
 try {
 
 const res = await fetch(`${API_BASE}/contact`, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
+method: "POST",
+headers: { "Content-Type": "application/json" },
 body: JSON.stringify(data)
 });
 
 const result = await res.json();
 
 if(res.ok){
-alert('Contact form submitted successfully!');
+alert("Message sent successfully!");
 e.target.reset();
 }else{
-alert(result.message || 'Something went wrong');
+alert(result.message || "Something went wrong");
 }
 
-} catch(err){
-alert('Server error');
+}catch{
+alert("Server error");
 }
 
 });
 </script>
+
+<!-- FOOTER -->
+
+<div id="footer"></div>
+
+<script src="../../js/loadFooter.js"></script>
 
 </body>
 </html>

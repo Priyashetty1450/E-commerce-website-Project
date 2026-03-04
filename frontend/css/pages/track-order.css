@@ -1,179 +1,270 @@
-/* MAIN CONTAINER */
+/* ================= MAIN CONTAINER ================= */
 
 .track-container{
-  max-width:1100px;
-  margin:50px auto;
-  padding:20px;
+max-width:1100px;
+margin:50px auto;
+padding:20px;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 .track-header{
-  text-align:center;
-  margin-bottom:30px;
+text-align:center;
+margin-bottom:30px;
 }
 
 .track-header h1{
-  color:#8B4513;
-  margin-bottom:10px;
+color:#8B4513;
+margin-bottom:10px;
 }
 
-/* FORM CARD */
+/* ================= FORM CARD ================= */
 
 .track-form{
-  background:#fff;
-  padding:30px;
-  border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.1);
-  margin-bottom:30px;
-  text-align:center;
+background:#fff;
+padding:30px;
+border-radius:12px;
+box-shadow:0 4px 20px rgba(0,0,0,0.1);
+margin-bottom:30px;
+text-align:center;
 }
 
 .track-form h2{
-  margin-bottom:20px;
-  color:#333;
+margin-bottom:20px;
+color:#333;
 }
 
-/* INPUT GROUP */
+/* ================= INPUT GROUP ================= */
 
 .input-group{
-  display:flex;
-  gap:10px;
-  margin-bottom:15px;
+display:flex;
+gap:10px;
+margin-bottom:15px;
 }
 
 .input-group input{
-  flex:1;
-  padding:12px;
-  border:1px solid #ddd;
-  border-radius:6px;
+flex:1;
+padding:12px;
+border:1px solid #ddd;
+border-radius:6px;
+font-size:14px;
 }
 
+/* ================= BUTTON ================= */
+
 .track-btn{
-  padding:12px 20px;
-  background:#8B4513;
-  color:#fff;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  transition:0.3s;
+padding:12px 20px;
+background:#8B4513;
+color:#fff;
+border:none;
+border-radius:6px;
+cursor:pointer;
+transition:0.3s;
+font-weight:600;
 }
 
 .track-btn:hover{
-  background:#a0522d;
+background:#a0522d;
 }
 
-.track-note{
-  font-size:13px;
-  color:#777;
-}
-
-/* ERROR MESSAGE */
+/* ================= ERROR MESSAGE ================= */
 
 .error-message{
-  display:none;
-  background:#f8d7da;
-  color:#721c24;
-  padding:15px;
-  border-radius:6px;
-  margin-bottom:20px;
+display:none;
+background:#f8d7da;
+color:#721c24;
+padding:15px;
+border-radius:6px;
+margin-bottom:20px;
 }
 
-/* ORDER RESULT */
+/* ================= ORDER RESULT ================= */
 
 .order-result{
-  display:none;
-  gap:30px;
-  flex-wrap:wrap;
+display:none;
+gap:30px;
+flex-wrap:wrap;
 }
 
-/* ORDER INFO CARD */
+/* ================= ORDER INFO CARD ================= */
 
 .order-info{
-  flex:1;
-  background:#fff;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+flex:1;
+background:#fff;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 20px rgba(0,0,0,0.1);
 }
 
-/* INFO GRID */
+/* ================= INFO GRID ================= */
 
 .info-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  margin-top:15px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:15px;
 }
 
-.info-item label{
-  font-size:12px;
-  color:#777;
+.info-grid div{
+display:flex;
+flex-direction:column;
 }
 
-.info-item span{
-  font-weight:600;
+.info-grid label{
+font-size:12px;
+color:#777;
 }
 
-/* ADDRESS */
+.info-grid span{
+font-weight:600;
+font-size:14px;
+}
+
+/* ================= ADDRESS ================= */
 
 .shipping-address{
-  margin-top:20px;
-  padding:15px;
-  background:#f9f9f9;
-  border-radius:8px;
+margin-top:20px;
+padding:15px;
+background:#f9f9f9;
+border-radius:8px;
 }
 
-/* TIMELINE */
+/* ================= TIMELINE CARD ================= */
 
 .status-timeline{
-  flex:1;
-  background:#fff;
-  padding:25px;
-  border-radius:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+flex:1;
+background:#fff;
+padding:25px;
+border-radius:12px;
+box-shadow:0 4px 20px rgba(0,0,0,0.1);
 }
+
+/* ================= ORDER TRACKING TIMELINE ================= */
 
 .timeline{
-  margin-top:20px;
-  border-left:3px solid #8B4513;
-  padding-left:20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:40px;
+position:relative;
 }
+
+/* GREY BASE LINE */
+
+.timeline::before{
+content:"";
+position:absolute;
+top:15px;
+left:0;
+width:100%;
+height:4px;
+background:#ddd;
+z-index:0;
+}
+
+/* PROGRESS COLOR LINE */
+
+.timeline::after{
+content:"";
+position:absolute;
+top:15px;
+left:0;
+height:4px;
+background:#8B4513;
+width:0%;
+z-index:1;
+transition:width 0.6s ease;
+}
+
+/* STEP */
 
 .timeline-step{
-  margin-bottom:20px;
-  position:relative;
+position:relative;
+text-align:center;
+flex:1;
+z-index:2;
 }
+
+/* CIRCLE */
 
 .timeline-step::before{
-  content:"";
-  position:absolute;
-  left:-11px;
-  top:5px;
-  width:16px;
-  height:16px;
-  background:#ddd;
-  border-radius:50%;
+content:"";
+width:20px;
+height:20px;
+background:#ddd;
+border-radius:50%;
+display:block;
+margin:0 auto 10px auto;
+border:3px solid #fff;
+box-shadow:0 0 0 2px #ddd;
 }
+
+/* ACTIVE STEP */
 
 .timeline-step.active::before{
-  background:#8B4513;
+background:#8B4513;
+box-shadow:0 0 0 2px #8B4513;
 }
 
-.timeline-step h4{
-  margin-bottom:5px;
+/* TEXT */
+
+.timeline-step p{
+font-size:13px;
+color:#777;
 }
 
-/* RESPONSIVE */
+.timeline-step.active p{
+color:#8B4513;
+font-weight:600;
+}
+
+/* ================= PROGRESS STATES ================= */
+
+.timeline.progress-1::after{ width:0%; }
+.timeline.progress-2::after{ width:25%; }
+.timeline.progress-3::after{ width:50%; }
+.timeline.progress-4::after{ width:75%; }
+.timeline.progress-5::after{ width:100%; }
+
+/* ================= LOADER ================= */
+
+.loader{
+text-align:center;
+font-size:16px;
+padding:20px;
+color:#777;
+}
+
+/* ================= RESPONSIVE ================= */
 
 @media(max-width:768px){
 
 .input-group{
-  flex-direction:column;
+flex-direction:column;
 }
 
 .info-grid{
-  grid-template-columns:1fr;
+grid-template-columns:1fr;
+}
+
+.timeline{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.timeline::before,
+.timeline::after{
+display:none;
+}
+
+.timeline-step{
+margin-bottom:20px;
+text-align:left;
+}
+
+.timeline-step::before{
+margin:0 10px 0 0;
+display:inline-block;
 }
 
 }

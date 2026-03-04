@@ -6,10 +6,10 @@
 
 <title>Payment Failed</title>
 
-<link rel="stylesheet" href="/css/ii.css">
+<link rel="stylesheet" href="../../css/ii.css">
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 body{
@@ -96,7 +96,8 @@ padding:40px;
 </div>
 
 <a id="retryBtn" class="btn">Try Again</a>
-<a href="/pages/home/Landing.html" class="btn btn-secondary">
+
+<a href="../home/Landing.html" class="btn btn-secondary">
 Continue Shopping
 </a>
 
@@ -105,6 +106,7 @@ Continue Shopping
 </div>
 
 <script>
+
 const API_BASE = "http://localhost:5000/api";
 
 const params = new URLSearchParams(window.location.search);
@@ -134,14 +136,14 @@ year:"numeric",month:"long",day:"numeric"
 const retryBtn = document.getElementById("retryBtn");
 
 if (orderId) {
-retryBtn.href = `/pages/checkout/checkout.html?retryOrder=${orderId}`;
+retryBtn.href = `../checkout/checkout.html?retryOrder=${orderId}`;
 } else {
-retryBtn.href = "/pages/checkout/checkout.html";
+retryBtn.href = "../checkout/checkout.html";
 }
 
 }
 
-/* OPTIONAL → VERIFY ORDER EXISTS */
+/* VERIFY ORDER */
 async function verifyOrder() {
 
 if (!orderId) {
@@ -152,6 +154,7 @@ return;
 try {
 
 const res = await fetch(`${API_BASE}/orders/${orderId}`);
+
 if (!res.ok) {
 initUI();
 return;
@@ -162,7 +165,7 @@ const data = await res.json();
 /* If already paid → redirect to success */
 if (data.order.paymentStatus === "paid") {
 window.location.href =
-`/pages/checkout/success.html?orderId=${orderId}`;
+`../checkout/success.html?orderId=${orderId}`;
 return;
 }
 
@@ -175,7 +178,15 @@ initUI();
 }
 
 verifyOrder();
+
 </script>
+
+
+<!-- FOOTER -->
+<div id="footer"></div>
+
+<!-- LOAD FOOTER -->
+<script src="../../js/loadFooter.js"></script>
 
 </body>
 </html>

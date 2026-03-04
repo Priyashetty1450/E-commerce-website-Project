@@ -4,7 +4,7 @@ const STATUS_ORDER = [
   "Order Placed",
   "Order Packed",
   "Order Shipped",
-  "Order Out for Delivery",
+  "Out for Delivery",
   "Delivered"
 ];
 
@@ -20,6 +20,7 @@ function getToken() {
 
 function formatDate(dateString) {
   if (!dateString) return "N/A";
+
   return new Date(dateString).toLocaleString("en-IN", {
     dateStyle: "medium",
     timeStyle: "short"
@@ -45,14 +46,18 @@ function hideError() {
 /* ================= TRACK ORDER ================= */
 
 async function trackOrder() {
+
   const orderId = $("orderIdInput").value.trim();
   const email = $("emailInput").value.trim();
 
-  if (!orderId) return showError("Enter Order ID");
+  if (!orderId) {
+    return showError("Enter Order ID");
+  }
 
   showLoader();
 
   try {
+
     let url = `${API_BASE}/orders/track/${orderId}`;
 
     if (!getToken()) {
@@ -73,17 +78,23 @@ async function trackOrder() {
     }
 
     hideError();
+
     renderOrder(data);
+
     startLiveTracking(orderId, email);
 
   } catch {
+
     showError("Server error. Try again.");
+
   }
+
 }
 
 /* ================= RENDER ORDER ================= */
 
 function renderOrder(order) {
+
   $("orderResult").classList.add("active");
 
   $("resultOrderId").innerText = order.orderId;
@@ -92,30 +103,43 @@ function renderOrder(order) {
   $("resultTotal").innerText = `₹${order.total || 0}`;
 
   /* PRODUCTS */
-  if (order.items?.length) {
-    $("resultProducts").innerText = order.items.map(i => i.name).join(", ");
+
+  if (order.items && order.items.length) {
+
+    $("resultProducts").innerText =
+      order.items.map(i => i.name).join(", ");
+
     $("resultQuantity").innerText =
       order.items.reduce((sum, i) => sum + i.quantity, 0);
+
   } else {
+
     $("resultProducts").innerText = order.product || "N/A";
     $("resultQuantity").innerText = order.quantity || 0;
+
   }
 
   /* ADDRESS */
+
   if (order.shippingAddress) {
+
     const a = order.shippingAddress;
+
     $("resultAddress").innerText =
       `${a.street || ""}, ${a.city || ""}, ${a.state || ""} - ${a.zipCode || ""}`;
 
     $("shippingAddressSection").style.display = "block";
+
   }
 
   renderTimeline(order);
+
 }
 
 /* ================= TIMELINE ================= */
 
 function renderTimeline(order) {
+
   const container = $("statusTimeline");
   container.innerHTML = "";
 
@@ -123,7 +147,9 @@ function renderTimeline(order) {
   const currentStatus = order.status;
 
   if (history.length) {
+
     history.forEach((s, i) => {
+
       const div = document.createElement("div");
 
       div.className =
@@ -139,15 +165,19 @@ function renderTimeline(order) {
       `;
 
       container.appendChild(div);
+
     });
 
   } else {
+
     const currentIndex = STATUS_ORDER.indexOf(currentStatus);
 
     STATUS_ORDER.forEach((status, i) => {
+
       const div = document.createElement("div");
 
       let cls = "";
+
       if (i < currentIndex) cls = "completed";
       if (i === currentIndex) cls = "active";
 
@@ -160,51 +190,78 @@ function renderTimeline(order) {
       `;
 
       container.appendChild(div);
+
     });
+
   }
+
 }
 
 /* ================= LIVE TRACKING ================= */
 
 function startLiveTracking(orderId, email) {
-  if (pollingInterval) clearInterval(pollingInterval);
+
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+  }
 
   pollingInterval = setInterval(() => {
+
     silentRefresh(orderId, email);
+
   }, 15000);
+
 }
 
 async function silentRefresh(orderId, email) {
+
   try {
+
     let url = `${API_BASE}/orders/track/${orderId}`;
 
     if (!getToken()) {
       url += `?email=${encodeURIComponent(email)}`;
     }
 
-    const res = await fetch(url);
+    const res = await fetch(url, {
+      headers: getToken()
+        ? { Authorization: `Bearer ${getToken()}` }
+        : {}
+    });
+
     const data = await res.json();
 
     if (res.ok) {
       renderTimeline(data);
     }
+
   } catch {}
+
 }
 
 /* ================= ENTER KEY ================= */
 
 $("orderIdInput")?.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") trackOrder();
+
+  if (e.key === "Enter") {
+    trackOrder();
+  }
+
 });
 
 /* ================= INIT ================= */
 
 window.addEventListener("load", () => {
+
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get("orderId");
 
   if (orderId) {
+
     $("orderIdInput").value = orderId;
+
     trackOrder();
+
   }
+
 });

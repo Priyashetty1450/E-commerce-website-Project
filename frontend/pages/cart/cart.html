@@ -7,23 +7,24 @@
   <title>Shopping Cart</title>
 
   <!-- GLOBAL CSS -->
-  <link rel="stylesheet" href="/css/ii.css" />
-  <link rel="stylesheet" href="/css/cart.css" />
+  <link rel="stylesheet" href="../../css/ii.css" />
+  <link rel="stylesheet" href="../../css/cart.css" />
 
   <!-- FONT AWESOME -->
   <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-  <!-- 🔐 AUTH (load in head so protection runs before page render) -->
-  <script src="/js/auth.js"></script>
+  <!-- AUTH -->
+  <script src="../../js/auth.js"></script>
   <script>
     requireLogin();
   </script>
+
 </head>
 
 <body>
 
-<!-- ✅ GLOBAL HEADER -->
+<!-- GLOBAL HEADER -->
 <div id="header"></div>
 
 <!-- ================= CART ================= -->
@@ -32,17 +33,20 @@
 
   <h1>Shopping Cart</h1>
 
-  <!-- 🛒 EMPTY CART -->
+  <!-- EMPTY CART -->
   <div id="empty-cart" class="empty-cart" style="display:none;">
     <i class="fa fa-shopping-cart"></i>
     <p>Your cart is empty</p>
-    <a href="/pages/shop/shop.html" class="shop-btn">Go to Shop</a>
+
+    <a href="../shop/shop.html" class="shop-btn">
+      Go to Shop
+    </a>
   </div>
 
-  <!-- 🧾 CART ITEMS -->
+  <!-- CART ITEMS -->
   <div id="cart-items"></div>
 
-  <!-- 💰 SUMMARY -->
+  <!-- SUMMARY -->
   <div id="cart-summary" class="cart-summary" style="display:none;">
     <h3>Order Summary</h3>
 
@@ -56,11 +60,19 @@
 
 </main>
 
-<!-- ✅ LOAD GLOBAL HEADER -->
-<script src="/js/loadHeader.js"></script>
 
-<!-- 🛒 CART LOGIC -->
-<script src="/js/cart.js"></script>
+<!-- LOAD GLOBAL HEADER -->
+<script src="../../js/loadHeader.js"></script>
+
+<!-- CART LOGIC -->
+<script src="../../js/cart.js"></script>
+
+
+<!-- FOOTER -->
+<div id="footer"></div>
+
+<!-- LOAD FOOTER -->
+<script src="../../js/loadFooter.js"></script>
 
 </body>
 </html>
