@@ -23,26 +23,34 @@
 
     <div id="message" class="message" style="display:none;"></div>
 
-    <!-- USERNAME -->
-    <input
-      type="text"
-      id="username"
-      placeholder="Username"
-      required
-    />
+    <form onsubmit="login(event)">
 
-    <!-- PASSWORD -->
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      required
-    />
+      <!-- USERNAME -->
+      <div class="form-group">
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          required
+        />
+      </div>
 
-    <!-- LOGIN BUTTON -->
-    <button class="auth-btn" onclick="login()">
-      Login
-    </button>
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        />
+      </div>
+
+      <!-- LOGIN BUTTON -->
+      <button type="submit" class="auth-btn">
+        Login
+      </button>
+
+    </form>
 
     <p>
       Don't have an account?
