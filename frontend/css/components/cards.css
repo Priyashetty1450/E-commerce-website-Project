@@ -10,3 +10,25 @@
 .category-card:hover {
   transform: translateY(-5px);
 }
+
+/* Tablet */
+@media (max-width: 768px) {
+  .product-card,
+  .category-card {
+    border-radius: 8px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .product-card,
+  .category-card {
+    border-radius: 6px;
+    box-shadow: 0 3px 10px var(--shadow);
+  }
+
+  .product-card:hover,
+  .category-card:hover {
+    transform: none;
+  }
+}

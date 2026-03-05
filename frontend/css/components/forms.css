@@ -13,3 +13,22 @@
   border: none;
   border-radius: 10px;
 }
+
+/* Tablet */
+@media (max-width: 768px) {
+  .auth-form input,
+  .auth-form button {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .auth-form input,
+  .auth-form button {
+    padding: 9px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+}

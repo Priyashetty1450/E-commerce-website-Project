@@ -10,6 +10,7 @@
   position: fixed;
   width: 100%;
   top: 0;
+  left: 0;
   z-index: 1000;
 }
 
@@ -107,6 +108,7 @@ nav ul li a:hover {
 
 .mobile-menu-btn i {
   font-size: 22px;
+  color: white;
 }
 
 /* ================= MOBILE ================= */
@@ -121,14 +123,21 @@ nav ul li a:hover {
     display: flex;
   }
 
+  .header-container {
+    padding: 12px 15px;
+  }
+
+  .logo img {
+    height: 50px;
+  }
+
   nav {
     display: none;
+    position: absolute;
+    top: 85px;
+    left: 0;
     width: 100%;
     background: white;
-    position: absolute;
-    top: 80px;
-    left: 0;
-    z-index: 1000;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
 
@@ -137,8 +146,14 @@ nav ul li a:hover {
   }
 
   nav ul {
+    display: flex;
     flex-direction: column;
     padding: 20px;
     gap: 15px;
+  }
+
+  nav ul li a {
+    display: block;
+    width: 100%;
   }
 }

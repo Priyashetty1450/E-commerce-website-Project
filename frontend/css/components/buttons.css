@@ -1,9 +1,28 @@
+/* BUTTON RESPONSIVE */
+
 .btn {
   background: var(--primary);
   color: white;
   padding: 12px 30px;
   border-radius: 4px;
   text-decoration: none;
+  display: inline-block;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .btn {
+    padding: 8px 18px;
+    font-size: 13px;
+  }
 }
 
 .btn:hover {

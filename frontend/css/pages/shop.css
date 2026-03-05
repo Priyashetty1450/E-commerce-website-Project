@@ -261,13 +261,96 @@
 }
 
 
-        .cart-icon {
-            position: relative;
-        }
+.cart-icon {
+ position: relative;
+ }
 
-        .loading {
+.loading {
             text-align: center;
             padding: 50px;
             font-size: 18px;
             color: #666;
         }
+
+        @media (max-width: 768px) {
+
+  .filter-bar {
+    gap: 10px;
+    margin: 20px 10px;
+  }
+
+  .filter-btn {
+    padding: 8px 18px;
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+
+  .category-title {
+    font-size: 22px;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card img {
+    height: 220px;
+  }
+
+  .card-body {
+    padding: 15px;
+  }
+
+  .card-body h3 {
+    font-size: 16px;
+    height: auto;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .modal {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .btn-add,
+  .btn-wa {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .back a {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .filter-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .category-title {
+    font-size: 20px;
+  }
+
+  .card img {
+    height: 200px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+
+  .modal {
+    padding: 15px;
+  }
+}
