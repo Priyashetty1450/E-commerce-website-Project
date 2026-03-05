@@ -1,16 +1,12 @@
 /* ================= GOOGLE TOKEN HANDLER ================= */
 (function handleGoogleToken() {
-
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token");
 
   if (token) {
     localStorage.setItem("token", token);
-
-    // Remove token from URL
     window.history.replaceState({}, document.title, window.location.pathname);
   }
-
 })();
 
 
@@ -30,6 +26,7 @@ function loadHeader() {
       attachLogout();
       updateCartBadge();
       attachSearch();
+      attachMobileMenu();
     })
     .catch(err => console.log("Header load error:", err));
 }
@@ -79,7 +76,6 @@ function attachLogout() {
 
 /* ================= SEARCH ================= */
 function attachSearch() {
-
   const searchBtn = document.getElementById("searchBtn");
   const searchInput = document.getElementById("searchInput");
 
@@ -105,7 +101,6 @@ function attachSearch() {
 
 /* ================= CART BADGE ================= */
 async function updateCartBadge() {
-
   const badge = document.getElementById("cart-count");
   const token = localStorage.getItem("token");
 
@@ -126,7 +121,6 @@ async function updateCartBadge() {
     if (!res.ok) throw new Error();
 
     const data = await res.json();
-
     const count = data.items.reduce((sum, i) => sum + i.quantity, 0);
 
     badge.innerText = count;
@@ -135,4 +129,49 @@ async function updateCartBadge() {
     console.log("Cart badge error", err);
     badge.innerText = 0;
   }
+}
+
+
+/* ================= MOBILE MENU ================= */
+function attachMobileMenu() {
+  const menuBtn = document.getElementById("mobileMenuBtn");
+  const nav = document.getElementById("mainNav");
+  const menuIcon = document.getElementById("menuIcon");
+
+  if (!menuBtn || !nav || !menuIcon) return;
+
+  function setMenuState(isOpen) {
+    nav.classList.toggle("active", isOpen);
+
+    if (isOpen) {
+      menuIcon.classList.remove("fa-bars");
+      menuIcon.classList.add("fa-times");
+    } else {
+      menuIcon.classList.remove("fa-times");
+      menuIcon.classList.add("fa-bars");
+    }
+  }
+
+  menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setMenuState(!nav.classList.contains("active"));
+  });
+
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      setMenuState(false);
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!nav.contains(e.target) && !menuBtn.contains(e.target)) {
+      setMenuState(false);
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+      setMenuState(false);
+    }
+  });
 }
